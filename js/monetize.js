@@ -32,37 +32,52 @@ export const PLACEMENTS = {
 // Shown when the network has no fill, which is a routine occurrence — often
 // 5–20% of requests. Without house ads those slots collapse to blank space, so
 // this inventory is what keeps the layout intact and earns something anyway.
+// Each creative declares when it can actually be delivered. A house ad whose
+// button cannot do what it says is worse than an empty slot: on a store build
+// it reads as a broken feature, which is a straightforward App Review
+// rejection under guideline 2.1.
 const HOUSE_ADS = [
   {
     title: 'Keep Lantern free for everyone',
     body: 'No subscription, no locked chapters. Gifts and ads pay the bills.',
     cta: 'Give',
     action: 'tip',
+    // Absent from store builds, where there is nowhere for the button to go.
+    available: () => donationsAvailable(),
   },
   {
     title: 'Support with a short video',
     body: 'Watch one advert on purpose instead of a dozen in passing.',
     cta: 'Watch',
     action: 'rewarded',
+    // With no ad network wired up there is no video to play, and promising one
+    // then showing nothing is exactly the sort of thing review looks for.
+    available: () => !isHouseOnly(),
   },
   {
     title: 'Read the whole Bible this year',
     body: 'A paced daily plan, about 14 minutes of listening a day.',
     cta: 'Start',
     action: 'plans',
+    available: () => true,
   },
   {
     title: 'Listen anywhere',
-    body: 'Save both translations to your device and listen with no signal.',
+    body: 'Save every translation to your device and listen with no signal.',
     cta: 'Download',
     action: 'offline',
+    // Native builds already carry the scripture in the app bundle, so there is
+    // nothing left to download.
+    available: () => !detectedNative() && PLATFORM_TARGET === 'web',
   },
 ];
 
 let houseCursor = 0;
 
 function nextHouseAd() {
-  return HOUSE_ADS[houseCursor++ % HOUSE_ADS.length];
+  const usable = HOUSE_ADS.filter(ad => ad.available());
+  if (!usable.length) return null;
+  return usable[houseCursor++ % usable.length];
 }
 
 /* ── Direct-sold sponsorship ──────────────────────────────────── */
@@ -228,7 +243,15 @@ class AdSlot {
     }
 
     this.el.innerHTML = '';
-    this.el.append(creative || this.houseCreative());
+    const filled = creative || this.houseCreative();
+
+    // Nothing to show: collapse the slot rather than leaving a labelled but
+    // empty box beside the scripture, and do not count an impression for an
+    // advert nobody saw.
+    this.el.hidden = !filled;
+    if (!filled) return;
+
+    this.el.append(filled);
     recordImpression();
   }
 
@@ -262,6 +285,7 @@ class AdSlot {
 
   houseCreative() {
     const ad = nextHouseAd();
+    if (!ad) return null;
 
     const wrap = document.createElement('div');
     wrap.className = 'ad';
