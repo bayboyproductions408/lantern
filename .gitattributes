@@ -1,0 +1,9 @@
+# CI runs on macOS; CRLF would break shell steps and confuse Xcode tooling.
+* text=auto eol=lf
+
+# Binary assets must never be line-ending normalised.
+*.png binary
+*.jpg binary
+*.ico binary
+*.mobileprovision binary
+*.p12 binary

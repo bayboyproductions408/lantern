@@ -1,0 +1,24 @@
+{
+  "name": "Lantern — The Bible, read aloud",
+  "short_name": "Lantern",
+  "description": "Open the app and start listening to the Bible, from anywhere you left off.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14110f",
+  "theme_color": "#14110f",
+  "categories": [
+    "books",
+    "lifestyle",
+    "education"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

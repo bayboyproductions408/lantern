@@ -1,0 +1,28 @@
+# Generated build output
+www/
+dist/
+ios/App/App/public/
+ios/App/Pods/
+ios/App/build/
+ios/App/DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Raw source texts — 8.8 MB of downloads that only exist to regenerate data/.
+# build-data.js documents where they come from.
+_source/
+
+# Dependencies
+node_modules/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Never commit signing material. It lives in dev-tools/ios-signing/, outside
+# this repo, and reaches CI as GitHub Secrets.
+*.p12
+*.p8
+*.mobileprovision
+*.cer
+*.key
