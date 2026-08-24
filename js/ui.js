@@ -115,7 +115,6 @@ export function renderNow() {
 
   $('#translationChip').textContent = t ? t.abbr : '';
   $('#speedBtn').textContent = `${store.get().rate.toFixed(1)}×`;
-  $('#toneBtn').textContent = speech.tone(store.get().tone).label;
 
   const sleep = player.sleepStatus();
   const note = $('#sleepNote');
@@ -1025,7 +1024,6 @@ export function bind() {
   $('#speedBtn').addEventListener('click', openSpeedSheet);
   $('#sleepBtn').addEventListener('click', openSleepSheet);
   $('#voiceBtn').addEventListener('click', openVoiceSheet);
-  $('#toneBtn').addEventListener('click', openToneSheet);
   $('#translationChip').addEventListener('click', openTranslationSheet);
 
   $('#bookmarkBtn').addEventListener('click', () => {
