@@ -25,9 +25,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Capacitor 8's CLI refuses to run on anything below Node 22.
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm ci
@@ -49,7 +50,7 @@ jobs:
       - name: Capacitor sync
         run: npx cap sync ios
 
-      # Capacitor 7 uses Swift Package Manager, so there is no CocoaPods step.
+      # Capacitor 8 uses Swift Package Manager, so there is no CocoaPods step.
 
       - name: Import signing certificate
         env:
