@@ -110,10 +110,44 @@ const PREFERRED_BY_LANG = {
   es: [/google\s+espa[ñn]ol/i, /google.*spanish/i],
 };
 
+// Apple ships a set of joke voices — they are singing or sound-effect toys, not
+// narrators. None of the name markers above apply on iOS (every voice reports
+// localService and none say "enhanced"), so without this list every voice tied
+// on rank and the picker fell back to sorting by name — which handed the
+// default to "Albert". Scripture read by a novelty voice is the single worst
+// first impression this app could make, so these are removed outright.
+const NOVELTY = /^(albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|jester|organ|pipe organ|superstar|trinoids|whisper|wobble|zarvox|hysterical)\b/i;
+
+// Older system voices that still work but sound distinctly synthetic, plus
+// Apple's character voices. Kept selectable, ranked below the real narrators.
+const DATED = /^(fred|ralph|junior|kathy|princess|agnes|victoria|bruce|eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley)\b/i;
+
+// The Apple voices actually built for reading prose, best first. Order matters:
+// these all sit in the same tier, so without an explicit ranking the default
+// falls to whichever sorts first alphabetically — Aaron for English, Diego for
+// Spanish — rather than the voices Apple actually tuned as system narrators.
+const APPLE_GOOD = {
+  en: ['samantha', 'ava', 'allison', 'susan', 'nicky', 'tom', 'aaron', 'zoe',
+       'daniel', 'serena', 'kate', 'oliver', 'karen', 'moira', 'tessa', 'rishi'],
+  es: ['mónica', 'monica', 'paulina', 'marisol', 'jorge', 'juan', 'diego'],
+};
+
+/** Index in the preferred list for this language, or -1. */
+function appleRank(voice) {
+  const lang = (voice.lang || '').slice(0, 2).toLowerCase();
+  const name = (voice.name || '').toLowerCase();
+  return (APPLE_GOOD[lang] || []).findIndex(n => name.startsWith(n));
+}
+
+export function isNovelty(voice) {
+  return NOVELTY.test(voice.name || '');
+}
+
 function isPreferred(voice) {
   const lang = (voice.lang || '').slice(0, 2).toLowerCase();
   return (PREFERRED_BY_LANG[lang] || []).some(re => re.test(voice.name || ''));
 }
+
 
 function score(voice) {
   const name = voice.name || '';
@@ -121,6 +155,12 @@ function score(voice) {
   if (NEURAL.test(name)) return { quality: 'neural', rank: 0 };
   if (ENHANCED.test(name)) return { quality: 'enhanced', rank: 1 };
   if (NETWORK.test(name) || !voice.localService) return { quality: 'enhanced', rank: 2 };
+  // Ranked above plain system voices so the default on an Apple device is a
+  // narrator rather than whatever sorts first alphabetically. The fractional
+  // step keeps the list's own order without colliding with the next tier.
+  const apple = appleRank(voice);
+  if (apple >= 0) return { quality: 'enhanced', rank: 2.5 + apple * 0.01 };
+  if (DATED.test(name)) return { quality: 'standard', rank: 5 };
   return { quality: 'standard', rank: 3 };
 }
 
@@ -138,7 +178,7 @@ function classify(voice) {
 
 function readVoices() {
   voiceList = (synth.getVoices() || [])
-    .filter(v => v.lang)
+    .filter(v => v.lang && !isNovelty(v))
     .map(classify)
     .sort((a, b) => a.rank - b.rank || a.name.localeCompare(b.name));
   return voiceList;

@@ -3,7 +3,10 @@
 
 const KEY = 'lantern.state.v1';
 
-const SCHEMA = 2;
+// Schema 3 clears saved voices again: on iOS every voice ties on rank, so the
+// picker fell back to alphabetical order and latched "Albert" — a novelty
+// voice. Anyone who already ran the app has that saved and would keep it.
+const SCHEMA = 3;
 
 const DEFAULTS = {
   schema: SCHEMA,
