@@ -36,10 +36,14 @@ const TEST_BANNER = {
 };
 
 const LIVE_BANNER = {
-  ios: '',        // ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX
-  android: '',
+  ios: 'ca-app-pub-9072066961806430/4272820839',
+  android: '',    // created when the Play build is registered
 };
 
+// Test mode stays on for TestFlight. Real ads served to your own device — and
+// especially a tap on one — is invalid traffic, and it is the usual way AdMob
+// accounts get suspended. This flips to false in the build that goes to the
+// App Store, not before.
 const TESTING = true;
 
 // Non-personalised ads. This is a deliberate default, not an oversight: it
