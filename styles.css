@@ -318,3 +318,16 @@ body.is-playing .mini-bars i:nth-child(3) { animation-delay: .36s; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* AdMob's banner is a native view the plugin overlays on the bottom of the
+   webview, not part of the page, so the app's own bottom chrome has to move up
+   by exactly the height the plugin reports for that device. The variable
+   defaults to zero, so the web build and any native build without a banner are
+   unaffected by these rules. */
+:root { --ad-banner-height: 0px; }
+body.has-ad-banner .tabbar { bottom: var(--ad-banner-height); }
+body.has-ad-banner .mini {
+  bottom: calc(var(--tab-h) + 10px + env(safe-area-inset-bottom) + var(--ad-banner-height));
+}
+body.has-ad-banner .toast { bottom: calc(var(--tab-h) + 76px + var(--ad-banner-height)); }
+body.has-ad-banner .view { padding-bottom: calc(var(--tab-h) + 96px + var(--ad-banner-height)); }

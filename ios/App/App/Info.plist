@@ -64,6 +64,12 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<!-- Required by the Google Mobile Ads SDK: the app crashes on launch if it
+	     is missing. This is Google's public TEST application id, which pairs
+	     with the test ad units in js/ads-admob.js. Replace it with the real id
+	     from the AdMob console at the same time as the ad units. -->
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-3940256099942544~1458002511</string>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
 	<key>UIRequiresFullScreen</key>

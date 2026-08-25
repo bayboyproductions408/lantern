@@ -4,7 +4,7 @@
 // The app shell is fetched from the network first so updates roll out, with the
 // cache as the fallback when offline.
 
-const VERSION = 'v3';
+const VERSION = 'v4';
 const SHELL_CACHE = `lantern-shell-${VERSION}`;
 const TEXT_CACHE = 'lantern-text';
 
@@ -23,6 +23,7 @@ const SHELL = [
   'js/plans.js',
   'js/monetize.js',
   'js/narration.js',
+  'js/ads-admob.js',
   'js/notify.js',
   'js/share.js',
 ];

@@ -6,6 +6,7 @@ import * as speech from './speech.js';
 import * as store from './store.js';
 import * as lib from './library.js';
 import * as notify from './notify.js';
+import * as admob from './ads-admob.js';
 
 async function boot() {
   ui.applyTheme();
@@ -29,6 +30,11 @@ async function boot() {
 
   // Arm the daily verse, and show it if today's time already passed.
   notify.catchUp();
+
+  // Deliberately last, and deliberately not awaited earlier: the banner is
+  // the least important thing on screen, and nothing about starting the
+  // reading should wait on an ad network. No-ops on the web.
+  admob.start();
 
   if (!speech.supported) {
     ui.toast('This browser cannot read text aloud. Try Chrome, Edge or Safari.');
