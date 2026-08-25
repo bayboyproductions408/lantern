@@ -2,6 +2,7 @@
 // verse by verse, rolling into the next chapter and book without stopping.
 
 import * as speech from './speech.js';
+import * as narration from './narration.js';
 import * as store from './store.js';
 import * as lib from './library.js';
 
@@ -60,6 +61,9 @@ async function ensureChapter() {
 
 /** Loads the stored position without starting playback. */
 export async function init() {
+  // Fire and forget: which chapters are narrated is only needed by the time
+  // playback starts, and a failed lookup just means the speech fallback.
+  narration.loadCatalogue();
   try {
     await ensureChapter();
   } catch {
@@ -118,6 +122,8 @@ export function setTranslation(id) {
   const pos = store.get().position;
   store.set({ translation: id });
   chapterData = null;
+  // The loaded recording belongs to the old translation.
+  narration.reset();
   goTo(pos.book, pos.chapter, pos.verse);
 }
 
@@ -146,6 +152,7 @@ export function pause() {
   playing = false;
   runId++;
   speech.cancel();
+  narration.cancel();
   document.body.classList.remove('is-playing');
   emit('state', false);
 }
@@ -154,6 +161,7 @@ function stop({ silent = false } = {}) {
   playing = false;
   runId++;
   speech.cancel();
+  narration.cancel();
   document.body.classList.remove('is-playing');
   if (!silent) emit('state', false);
 }
@@ -162,6 +170,7 @@ function stop({ silent = false } = {}) {
 function restart() {
   runId++;
   speech.cancel();
+  narration.cancel();
   if (playing) run();
 }
 
@@ -187,17 +196,32 @@ async function run() {
 
     const { rate, voiceByLang, tone, translation } = store.get();
     const lang = lib.langOf(translation);
-    // Only an explicit choice is stored; otherwise take the best voice the
-    // device currently offers, which may have improved since the app opened.
-    const voiceURI = voiceByLang[lang] ?? speech.bestVoice(lang)?.uri;
-    const finished = await speech.speak(text, { rate, voiceURI, toneId: tone, lang });
+
+    // A recording is always preferred, but never required: books that have
+    // not been narrated yet, and any device that is offline, fall through to
+    // on-device speech and the app behaves exactly as it did before.
+    const recorded = await narration.prepare(translation, data.slug, data.chapter);
+    if (mine !== runId || !playing) return;
+
+    let finished;
+    if (recorded) {
+      finished = await narration.playVerse(verseIndex, { rate });
+    } else {
+      // Only an explicit choice is stored; otherwise take the best voice the
+      // device currently offers, which may have improved since the app opened.
+      const voiceURI = voiceByLang[lang] ?? speech.bestVoice(lang)?.uri;
+      finished = await speech.speak(text, { rate, voiceURI, toneId: tone, lang });
+    }
     if (mine !== runId || !playing) return;
     if (!finished) return;
 
-    // A beat between verses. Without it the reading runs together and stops
-    // sounding like anyone is actually reading it.
-    const settled = await speech.pause(speech.tone(tone).versePause);
-    if (!settled || mine !== runId || !playing) return;
+    // A beat between verses, so the reading does not run together. The
+    // recording already carries its own pacing, so this applies only to the
+    // synthesised fallback.
+    if (!recorded) {
+      const settled = await speech.pause(speech.tone(tone).versePause);
+      if (!settled || mine !== runId || !playing) return;
+    }
 
     store.addStats(lib.secondsFor(text.split(/\s+/).length, rate), 1);
 

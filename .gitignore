@@ -28,4 +28,4 @@ Thumbs.db
 *.key
 
 # Rendered narration - ~1.1 GB, served from object storage, never committed.
-narration/
+/narration/

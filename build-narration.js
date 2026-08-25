@@ -132,9 +132,28 @@ const slugs = (index.books || index).map(b => b.slug || b);
 const todo = ONLY_BOOK ? slugs.filter(s => s === ONLY_BOOK) : slugs;
 if (!todo.length) { console.error(`no such book: ${ONLY_BOOK}`); process.exit(1); }
 
+/** A book counts as done only if its manifest covers every chapter and each
+ *  chapter's audio is actually on disk — a run killed mid-book must redo it. */
+function alreadyRendered(slug) {
+  const manifestPath = path.join(OUT_ROOT, slug, 'index.json');
+  if (!fs.existsSync(manifestPath)) return false;
+  try {
+    const m = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const src = JSON.parse(fs.readFileSync(path.join('data', TRANSLATION, `${slug}.json`), 'utf8'));
+    if (m.chapters.length !== src.chapters.length) return false;
+    return m.chapters.every(c => fs.existsSync(path.join(OUT_ROOT, slug, `${c.chapter}.m4a`)));
+  } catch {
+    return false;
+  }
+}
+
 fs.mkdirSync(OUT_ROOT, { recursive: true });
 let totalSecs = 0, totalBytes = 0;
 for (const slug of todo) {
+  if (alreadyRendered(slug)) {
+    console.log(`${slug.padEnd(18)} already rendered, skipping`);
+    continue;
+  }
   const r = renderBook(slug);
   totalSecs += r.secs; totalBytes += r.bytes;
   console.log(
