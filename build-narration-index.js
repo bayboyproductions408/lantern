@@ -23,8 +23,16 @@ if (!fs.existsSync(SRC)) {
   process.exit(1);
 }
 
+// Which release hosts each book, written by upload-narration.js. A book with
+// no entry has not been uploaded, and must not be advertised in the catalogue:
+// the app would offer a recording it cannot fetch.
+const releasesPath = path.join(SRC, 'releases.json');
+const hostedOn = fs.existsSync(releasesPath)
+  ? JSON.parse(fs.readFileSync(releasesPath, 'utf8'))
+  : {};
+
 const catalogue = {};
-let books = 0, chapters = 0, seconds = 0, bytes = 0;
+let books = 0, chapters = 0, seconds = 0, bytes = 0, unhosted = 0;
 
 for (const translation of fs.readdirSync(SRC)) {
   const trDir = path.join(SRC, translation);
@@ -48,10 +56,17 @@ for (const translation of fs.readdirSync(SRC)) {
       continue;
     }
 
+    const release = hostedOn[`${translation}/${book}`];
+    if (!release) {
+      unhosted++;
+      continue;
+    }
+
     // Drop byte counts; the app only needs where each verse starts.
     const slim = {
       book: m.book,
       name: m.name,
+      release,
       chapters: m.chapters.map(c => ({
         chapter: c.chapter,
         duration: c.duration,
@@ -77,6 +92,7 @@ const manifestBytes = fs.readdirSync(OUT, { recursive: true })
   .reduce((a, f) => a + fs.statSync(f).size, 0);
 
 console.log(`published ${books} books, ${chapters} chapters`);
+if (unhosted) console.log(`  ${unhosted} rendered but not yet uploaded — withheld from the catalogue`);
 for (const [tr, bs] of Object.entries(catalogue)) {
   console.log(`  ${tr}: ${Object.keys(bs).length} books`);
 }

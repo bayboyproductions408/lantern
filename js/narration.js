@@ -16,7 +16,10 @@
 // streams fine — but fetch() of anything on that host is blocked. The verse
 // offsets therefore ship inside the app rather than being fetched alongside
 // the audio, which also makes them instant and available offline.
-const BASE = 'https://github.com/bayboyproductions408/lantern/releases/download/narration-v1';
+// A release holds at most 1000 assets and the KJV alone needs 1189 chapters,
+// so books are spread across several releases. Each book's manifest records
+// which one holds it.
+const RELEASES = 'https://github.com/bayboyproductions408/lantern/releases/download';
 
 /* ── What has been recorded ───────────────────────────────────── */
 
@@ -85,8 +88,10 @@ export async function prepare(translation, book, chapter) {
     // Confirm the recording actually loads before committing to it. The
     // catalogue can legitimately run ahead of the uploaded audio, and a
     // chapter that 404s must fall back to speech rather than stop playback.
+    if (!manifest.release) return false;
+
     const a = audio();
-    a.src = `${BASE}/${translation}-${book}-${chapter}.m4a`;
+    a.src = `${RELEASES}/${manifest.release}/${translation}-${book}-${chapter}.m4a`;
     a.load();
 
     const ok = await new Promise(resolve => {

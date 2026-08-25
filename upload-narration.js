@@ -38,8 +38,17 @@ function storedToken() {
 const TOKEN = storedToken();
 const OWNER = 'bayboyproductions408';
 const REPO = 'lantern';
-const TAG = 'narration-v1';
 const SRC = 'narration';
+
+// A release holds at most 1000 assets — a hard GitHub limit, and the KJV alone
+// needs 1189 chapters. So books are packed across numbered releases, and which
+// release holds a given book is recorded in that book's manifest so the app can
+// find it. Assignment is derived from what is actually on GitHub rather than
+// from local bookkeeping, so a half-finished run self-corrects on the next one.
+const TAG_PREFIX = 'narration-v';
+const MAX_ASSETS = 1000;
+// Leave headroom so a book is never split across two releases.
+const SAFE_LIMIT = 960;
 
 if (!TOKEN) {
   console.error('LANTERN_GH_TOKEN is not set.');
@@ -77,18 +86,20 @@ function api(method, url, { body, headers = {}, raw } = {}) {
   });
 }
 
-async function getOrCreateRelease() {
+async function getOrCreateRelease(n) {
+  const tag = `${TAG_PREFIX}${n}`;
   try {
-    return await api('GET', `https://api.github.com/repos/${OWNER}/${REPO}/releases/tags/${TAG}`);
+    return await api('GET', `https://api.github.com/repos/${OWNER}/${REPO}/releases/tags/${tag}`);
   } catch {
-    console.log(`creating release ${TAG}`);
+    console.log(`creating release ${tag}`);
     return api('POST', `https://api.github.com/repos/${OWNER}/${REPO}/releases`, {
       headers: { 'Content-Type': 'application/json' },
       body: {
-        tag_name: TAG,
-        name: 'Lantern narration v1',
+        tag_name: tag,
+        name: `Lantern narration ${tag}`,
         body: 'Pre-recorded chapter narration streamed by the Lantern app. '
-            + 'Voices: en_GB-cori (public domain), es_ES-davefx (CC0), rendered with Piper.',
+            + 'Voices: en_GB-cori (public domain), es_ES-davefx (CC0), rendered with Piper. '
+            + 'Split across releases because GitHub caps a release at 1000 assets.',
         draft: false,
         prerelease: false,
       },
@@ -96,7 +107,7 @@ async function getOrCreateRelease() {
   }
 }
 
-async function existingAssets(releaseId) {
+async function assetsOf(releaseId) {
   const names = new Map();
   for (let page = 1; ; page++) {
     const batch = await api('GET',
@@ -108,9 +119,23 @@ async function existingAssets(releaseId) {
   return names;
 }
 
+/** Every narration release that already exists, lowest number first. */
+async function loadReleases() {
+  const all = await api('GET', `https://api.github.com/repos/${OWNER}/${REPO}/releases?per_page=100`);
+  const mine = all
+    .filter(r => r.tag_name.startsWith(TAG_PREFIX))
+    .map(r => ({ n: Number(r.tag_name.slice(TAG_PREFIX.length)) || 0, id: r.id, tag: r.tag_name }))
+    .sort((a, b) => a.n - b.n);
+  for (const r of mine) r.assets = await assetsOf(r.id);
+  return mine;
+}
+
+/** Books, each with the chapter files it needs hosted. Grouped rather than
+ *  flat so a book is never split across two releases — the app resolves one
+ *  release per book. */
 function collect() {
-  const files = [];
-  if (!fs.existsSync(SRC)) return files;
+  const books = [];
+  if (!fs.existsSync(SRC)) return books;
   for (const translation of fs.readdirSync(SRC)) {
     const trDir = path.join(SRC, translation);
     if (!fs.statSync(trDir).isDirectory()) continue;
@@ -121,51 +146,75 @@ function collect() {
       const manifestPath = path.join(bookDir, 'index.json');
       if (!fs.existsSync(manifestPath)) continue;
       const m = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+      const files = [];
+      let complete = true;
       for (const c of m.chapters) {
         const file = path.join(bookDir, `${c.chapter}.m4a`);
-        if (fs.existsSync(file)) {
-          files.push({ file, name: `${translation}-${book}-${c.chapter}.m4a` });
-        }
+        if (!fs.existsSync(file)) { complete = false; break; }
+        files.push({ file, name: `${translation}-${book}-${c.chapter}.m4a`, size: fs.statSync(file).size });
       }
+      if (complete) books.push({ key: `${translation}/${book}`, translation, book, files });
     }
   }
-  return files;
+  return books;
+}
+
+/** Where a book already lives in full, if anywhere. A book counts as hosted
+ *  only when every chapter is present at the right size — a truncated asset is
+ *  worse than a missing one, because the app would try to play it. */
+function homeOf(book, releases) {
+  return releases.find(r => book.files.every(f => r.assets.get(f.name) === f.size)) || null;
 }
 
 (async () => {
-  const release = await getOrCreateRelease();
-  console.log(`release ${TAG} id=${release.id}`);
+  const releases = await loadReleases();
+  for (const r of releases) console.log(`${r.tag}: ${r.assets.size} assets`);
 
-  const have = await existingAssets(release.id);
-  console.log(`already uploaded: ${have.size} assets`);
+  const books = collect();
+  console.log(`\n${books.length} complete books on disk\n`);
 
-  const files = collect();
-  const todo = files.filter(f => {
-    const size = have.get(f.name);
-    // Re-upload anything whose size does not match — a truncated asset is
-    // worse than a missing one, because the app would try to play it.
-    return size === undefined || size !== fs.statSync(f.file).size;
-  });
-  console.log(`to upload: ${todo.length} of ${files.length}\n`);
+  const assignment = {};
+  let uploaded = 0, bytes = 0, skipped = 0;
 
-  let done = 0, bytes = 0;
-  for (const f of todo) {
-    if (have.has(f.name)) {
-      const stale = (await api('GET',
-        `https://api.github.com/repos/${OWNER}/${REPO}/releases/${release.id}/assets?per_page=100`))
-        .find(a => a.name === f.name);
-      if (stale) await api('DELETE',
-        `https://api.github.com/repos/${OWNER}/${REPO}/releases/assets/${stale.id}`);
+  for (const book of books) {
+    const home = homeOf(book, releases);
+    if (home) { assignment[book.key] = home.tag; skipped++; continue; }
+
+    // Somewhere with room for the whole book, or a new release.
+    let target = releases.find(r => r.assets.size + book.files.length <= SAFE_LIMIT);
+    if (!target) {
+      const next = (releases.at(-1)?.n ?? 0) + 1;
+      const created = await getOrCreateRelease(next);
+      target = { n: next, id: created.id, tag: created.tag_name, assets: await assetsOf(created.id) };
+      releases.push(target);
+      releases.sort((a, b) => a.n - b.n);
     }
-    const data = fs.readFileSync(f.file);
-    await api('POST',
-      `https://uploads.github.com/repos/${OWNER}/${REPO}/releases/${release.id}/assets?name=${encodeURIComponent(f.name)}`,
-      { headers: { 'Content-Type': 'audio/mp4', 'Content-Length': data.length }, raw: data });
-    done++; bytes += data.length;
-    if (done % 25 === 0 || done === todo.length) {
-      console.log(`  ${done}/${todo.length}  ${(bytes / 1048576).toFixed(1)} MB`);
+
+    for (const f of book.files) {
+      if (target.assets.get(f.name) === f.size) continue;
+      if (target.assets.has(f.name)) {
+        const stale = (await api('GET',
+          `https://api.github.com/repos/${OWNER}/${REPO}/releases/${target.id}/assets?per_page=100`))
+          .find(a => a.name === f.name);
+        if (stale) await api('DELETE',
+          `https://api.github.com/repos/${OWNER}/${REPO}/releases/assets/${stale.id}`);
+      }
+      const data = fs.readFileSync(f.file);
+      await api('POST',
+        `https://uploads.github.com/repos/${OWNER}/${REPO}/releases/${target.id}/assets?name=${encodeURIComponent(f.name)}`,
+        { headers: { 'Content-Type': 'audio/mp4', 'Content-Length': data.length }, raw: data });
+      target.assets.set(f.name, data.length);
+      uploaded++; bytes += data.length;
     }
+    assignment[book.key] = target.tag;
+    console.log(`  ${book.key.padEnd(22)} -> ${target.tag}  (${target.assets.size} assets)`);
   }
-  console.log(`\nuploaded ${done} files, ${(bytes / 1048576).toFixed(1)} MB`);
-  console.log(`base URL: https://github.com/${OWNER}/${REPO}/releases/download/${TAG}/`);
+
+  // The app needs to know which release holds each book; this is folded into
+  // the per-book manifests by build-narration-index.js.
+  fs.writeFileSync(path.join(SRC, 'releases.json'), JSON.stringify(assignment, null, 2));
+
+  console.log(`\nalready hosted: ${skipped} books`);
+  console.log(`uploaded ${uploaded} files, ${(bytes / 1048576).toFixed(1)} MB`);
+  for (const r of releases) console.log(`  ${r.tag}: ${r.assets.size}/${MAX_ASSETS} assets`);
 })().catch(e => { console.error('FAILED:', e.message); process.exit(1); });
