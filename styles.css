@@ -331,3 +331,11 @@ body.has-ad-banner .mini {
 }
 body.has-ad-banner .toast { bottom: calc(var(--tab-h) + 76px + var(--ad-banner-height)); }
 body.has-ad-banner .view { padding-bottom: calc(var(--tab-h) + 96px + var(--ad-banner-height)); }
+/* Sheets are anchored to the bottom of the screen, so the banner lands on top
+   of them and swallows the last option in the list — which made the Spanish
+   translation unreachable. Lift the sheet and pad it by the banner height. */
+body.has-ad-banner .sheet {
+  bottom: var(--ad-banner-height);
+  max-height: calc(86vh - var(--ad-banner-height));
+  padding-bottom: calc(26px + env(safe-area-inset-bottom) + var(--ad-banner-height));
+}

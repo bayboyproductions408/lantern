@@ -5,7 +5,8 @@
   "ios": {
     "contentInset": "always",
     "backgroundColor": "#14110f",
-    "limitsNavigationsToAppBoundDomains": true
+    "_comment_appBoundDomains": "Deliberately false. When true, WKWebView refuses every request to a domain not listed in WKAppBoundDomains, which silently blocked the narration audio hosted on GitHub - playback fell back to on-device speech with no error. Declaring the hosts instead is not workable: release downloads redirect through changing CDN hostnames, and the list is capped at ten.",
+    "limitsNavigationsToAppBoundDomains": false
   },
   "android": {
     "backgroundColor": "#14110f"
