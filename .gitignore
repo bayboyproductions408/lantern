@@ -26,3 +26,6 @@ Thumbs.db
 *.mobileprovision
 *.cer
 *.key
+
+# Rendered narration - ~1.1 GB, served from object storage, never committed.
+narration/
