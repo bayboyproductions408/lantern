@@ -16,7 +16,26 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
-const TOKEN = process.env.LANTERN_GH_TOKEN;
+// setx writes to the user environment, but processes already running do not
+// inherit it — so a token set after this session began is invisible to
+// process.env. Fall back to reading the stored value directly. It is passed
+// straight into the request and never printed.
+function storedToken() {
+  if (process.env.LANTERN_GH_TOKEN) return process.env.LANTERN_GH_TOKEN;
+  if (process.platform !== 'win32') return null;
+  try {
+    const { execFileSync } = require('child_process');
+    const out = execFileSync('powershell', ['-NoProfile', '-Command',
+      '[Environment]::GetEnvironmentVariable("LANTERN_GH_TOKEN","User")'],
+      { encoding: 'utf8' });
+    const v = (out || '').trim();
+    return v || null;
+  } catch {
+    return null;
+  }
+}
+
+const TOKEN = storedToken();
 const OWNER = 'bayboyproductions408';
 const REPO = 'lantern';
 const TAG = 'narration-v1';
