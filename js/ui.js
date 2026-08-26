@@ -451,12 +451,17 @@ function renderSettings() {
   host.append(
     group('Listening',
       row('Translation', lib.TRANSLATIONS[state.translation].name, el('span', { class: 'val', text: lib.TRANSLATIONS[state.translation].abbr }), openTranslationSheet),
-      // Named for what it actually controls. It only applies where no
-      // recording exists, and a picker that appears to govern the reading but
-      // silently does nothing is worse than no picker at all.
-      row('Fallback device voice',
-        voice ? `${voice.name} — used only where there is no recording` : 'System default',
-        el('span', { class: 'val', text: voice ? QUALITY_LABEL[voice.quality] : '' }),
+      // Named for what it actually controls. Where a recording exists it is
+      // always used, and a picker that appears to govern the reading while
+      // silently doing nothing is worse than no picker at all.
+      row('Voice',
+        narration.anyFor(state.translation)
+          ? `Recorded narration — ${voice ? voice.name : 'device voice'} only as a fallback`
+          : voice ? `${voice.name} — no recording for this translation` : 'System default',
+        el('span', {
+          class: 'val',
+          text: narration.anyFor(state.translation) ? 'Recorded' : (voice ? QUALITY_LABEL[voice.quality] : ''),
+        }),
         openVoiceSheet),
       row('Reading tone', speech.tone(state.tone).note, el('span', { class: 'val', text: speech.tone(state.tone).label }), openToneSheet),
       row('Speed', 'How fast the reading is spoken', el('span', { class: 'val', text: `${state.rate.toFixed(1)}×` }), openSpeedSheet),
@@ -616,15 +621,38 @@ function activeVoice() {
 }
 
 function openVoiceSheet() {
-  const lang = lib.langOf(store.get().translation);
+  const translation = store.get().translation;
+  const lang = lib.langOf(translation);
   const all = speech.voices(lang);
   const current = activeVoice();
 
-  const subtitle = all.length
-    ? 'Listed best first. Lifelike voices sound close to a person reading.'
-    : `No ${lang === 'es' ? 'Spanish' : 'English'} voices are installed on this device.`;
+  // Where a recording exists it is always used, so the device voices below are
+  // a fallback and nothing more. Presenting them as the choice of narrator —
+  // when picking one changes nothing you can hear — is what made this sheet
+  // look broken.
+  const narrated = narration.anyFor(translation);
+  const tName = lib.TRANSLATIONS[translation].name;
 
-  openSheet('Narrator voice', subtitle, sheet => {
+  const subtitle = narrated
+    ? `${tName} is read by a recorded narrator. These voices are only used if a recording cannot be reached.`
+    : all.length
+      ? 'Listed best first. Lifelike voices sound close to a person reading.'
+      : `No ${lang === 'es' ? 'Spanish' : 'English'} voices are installed on this device.`;
+
+  openSheet('Voice', subtitle, sheet => {
+    if (narrated) {
+      sheet.append(
+        el('div', { class: 'opt is-on', style: 'cursor:default' },
+          el('span', {},
+            el('b', { text: 'Recorded narration' }),
+            el('small', { text: `Every chapter of ${tName}` })),
+          el('span', { class: 'val', text: 'In use' })
+        ),
+        el('p', { class: 'genre-head', style: 'margin-top:18px',
+          text: 'If a recording cannot be reached' })
+      );
+    }
+
     const list = el('div', { class: 'opt-list' });
     for (const v of all) {
       list.append(
@@ -642,7 +670,7 @@ function openVoiceSheet() {
     if (!all.length) {
       sheet.append(el('p', { class: 'muted', style: 'margin-top:14px',
         text: 'Add one in your system speech settings, then reopen Lantern. Until then this translation cannot be read aloud.' }));
-    } else if (speech.onlyBasicVoices(lang)) {
+    } else if (!narrated && speech.onlyBasicVoices(lang)) {
       // Windows ships only basic voices to Chrome. Edge exposes Microsoft's
       // "Natural" neural voices, which are a different class of quality.
       sheet.append(el('p', { class: 'muted', style: 'margin-top:14px',
