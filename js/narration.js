@@ -54,6 +54,45 @@ export function anyFor(translation) {
 let el = null;                 // the single <audio> element, reused
 let loaded = null;             // { translation, book, chapter, offsets, duration }
 let token = 0;                 // bumped on cancel, like the speech engine
+let unlocked = false;          // has a user gesture released media playback yet
+let lastNote = 'not started';  // surfaced in Settings, so a device can report
+                               // what happened instead of failing invisibly
+
+function note(msg) { lastNote = msg; }
+
+/** What the engine last did. Shown in Settings — narration failing silently is
+ *  exactly the bug that hid a broken build twice, so it is made visible. */
+export function status() {
+  return {
+    catalogue: catalogue ? `${Object.keys(catalogue).length} translations` : 'not loaded',
+    unlocked,
+    chapter: loaded ? `${loaded.translation}/${loaded.book} ${loaded.chapter}` : 'none',
+    last: lastNote,
+  };
+}
+
+/**
+ * iOS refuses to load or play media unless a user gesture started it, and that
+ * permission attaches to the element, not the page. So the very first tap on
+ * play must touch this element directly; afterwards it can be driven from code.
+ * Must be called synchronously from the gesture handler — an await first, and
+ * the gesture is already spent.
+ */
+export function unlock() {
+  if (unlocked) return;
+  const a = audio();
+  try {
+    const p = a.play();
+    if (p && p.then) {
+      p.then(() => { a.pause(); unlocked = true; note('audio unlocked'); })
+       .catch(() => { note('unlock rejected — will retry on next play'); });
+    } else {
+      a.pause(); unlocked = true; note('audio unlocked');
+    }
+  } catch {
+    note('unlock threw');
+  }
+}
 
 function audio() {
   if (el) return el;
@@ -85,33 +124,23 @@ export async function prepare(translation, book, chapter) {
     const entry = manifest.chapters.find(c => c.chapter === chapter);
     if (!entry) return false;
 
-    // Confirm the recording actually loads before committing to it. The
-    // catalogue can legitimately run ahead of the uploaded audio, and a
-    // chapter that 404s must fall back to speech rather than stop playback.
-    if (!manifest.release) return false;
+    if (!manifest.release) { note('book has no release assigned'); return false; }
 
+    // Deliberately no wait for loadedmetadata here. iOS will not load media
+    // outside a user gesture — preload is ignored and load() does nothing — so
+    // waiting for metadata timed out on every chapter and fell back to speech
+    // every time. The recording is committed to optimistically; if it turns
+    // out not to play, playVerse reports it and the caller falls back for that
+    // verse instead.
     const a = audio();
     a.src = `${RELEASES}/${manifest.release}/${translation}-${book}-${chapter}.m4a`;
     a.load();
 
-    const ok = await new Promise(resolve => {
-      const done = v => {
-        clearTimeout(timer);
-        a.removeEventListener('loadedmetadata', onOk);
-        a.removeEventListener('error', onFail);
-        resolve(v);
-      };
-      const onOk = () => done(true);
-      const onFail = () => done(false);
-      const timer = setTimeout(() => done(false), 8000);
-      a.addEventListener('loadedmetadata', onOk);
-      a.addEventListener('error', onFail);
-    });
-    if (!ok) { loaded = null; return false; }
-
     loaded = { translation, book, chapter, offsets: entry.verses, duration: entry.duration };
+    note(`prepared ${translation}/${book} ${chapter}`);
     return true;
-  } catch {
+  } catch (err) {
+    note(`prepare failed: ${err && err.message ? err.message : err}`);
     return false;
   }
 }
@@ -128,7 +157,9 @@ function endOf(index) {
  * playback could not start — the caller treats false as "stop here".
  */
 export function playVerse(index, { rate = 1 } = {}) {
-  if (!loaded || index < 0 || index >= loaded.offsets.length) return Promise.resolve(false);
+  if (!loaded || index < 0 || index >= loaded.offsets.length) {
+    return Promise.resolve('failed');
+  }
 
   const mine = ++token;
   const a = audio();
@@ -140,30 +171,54 @@ export function playVerse(index, { rate = 1 } = {}) {
   // Only seek when the playhead is not already inside this verse, so
   // continuous listening does not restart the decoder on every verse.
   const drift = Math.abs(a.currentTime - start);
-  if (a.paused || drift > 0.35) a.currentTime = start;
+  if (a.paused || drift > 0.35) {
+    // Seeking before any data has arrived throws; the playhead lands where it
+    // can and the boundary poll below corrects once metadata is in.
+    try { a.currentTime = start; } catch { /* not seekable yet */ }
+  }
 
   return new Promise(resolve => {
     let timer = null;
-    const done = ok => {
+    // 'failed' and 'cancelled' are distinct: a failure should fall back to
+    // speech for this verse, a cancellation should stop quietly. Collapsing
+    // them is what let a broken audio path masquerade as a user pause.
+    const done = outcome => {
       if (timer) clearInterval(timer);
       a.removeEventListener('ended', onEnded);
       a.removeEventListener('error', onError);
-      resolve(ok);
+      resolve(outcome);
     };
-    const onEnded = () => done(mine === token);
-    const onError = () => done(false);
+    const onEnded = () => done(mine === token ? 'done' : 'cancelled');
+    const onError = () => { note('audio element error'); done('failed'); };
 
     a.addEventListener('ended', onEnded);
     a.addEventListener('error', onError);
 
+    // If nothing has started playing at all, treat it as a failure rather than
+    // hanging — on iOS this is what a blocked or missing download looks like.
+    const stall = setTimeout(() => {
+      if (a.paused || a.readyState === 0) { note('audio never started'); done('failed'); }
+    }, 6000);
+    const clearStall = () => clearTimeout(stall);
+
     // timeupdate only fires about four times a second, which is too coarse to
     // land on a verse boundary cleanly, so the boundary is polled instead.
     timer = setInterval(() => {
-      if (mine !== token) return done(false);
-      if (a.currentTime >= stop - 0.02) done(true);
+      if (mine !== token) { clearStall(); return done('cancelled'); }
+      if (a.readyState > 0 && a.currentTime >= stop - 0.02) { clearStall(); done('done'); }
     }, 40);
 
-    a.play().catch(() => done(false));
+    a.play().then(() => {
+      // The pre-emptive unlock often rejects because no source was set yet.
+      // Playback starting here is the authoritative signal, so correct the
+      // note rather than leaving a stale failure on the diagnostics row.
+      unlocked = true;
+      note(`playing ${loaded.translation}/${loaded.book} ${loaded.chapter}`);
+    }).catch(err => {
+      clearStall();
+      note(`play rejected: ${err && err.name ? err.name : 'unknown'}`);
+      done('failed');
+    });
   });
 }
 

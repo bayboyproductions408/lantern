@@ -4,6 +4,7 @@ import * as player from './player.js';
 import * as store from './store.js';
 import * as lib from './library.js';
 import * as speech from './speech.js';
+import * as narration from './narration.js';
 import * as plans from './plans.js';
 import * as money from './monetize.js';
 import * as notify from './notify.js';
@@ -447,7 +448,13 @@ function renderSettings() {
       row('Keep playing', 'Roll into the next chapter automatically', toggleSwitch(state.autoAdvance), () => {
         store.set({ autoAdvance: !store.get().autoAdvance });
         renderSettings();
-      })
+      }),
+      // Narration failing falls back to the synthesiser on purpose, which is
+      // right for someone offline but hides a broken build completely. This
+      // row makes the engine say what it actually did.
+      row('Recorded narration', narrationSummary(), el('span', {
+        class: 'val', text: narration.status().chapter === 'none' ? '—' : 'on'
+      }), () => { renderSettings(); })
     )
   );
 
@@ -627,6 +634,12 @@ function openVoiceSheet() {
         text: 'Only basic system voices were found. For a much more natural reading, try opening Lantern in Microsoft Edge, which offers Microsoft “Natural” voices, or install additional voices in your system speech settings.' }));
     }
   });
+}
+
+/** One line describing what the narration engine last managed to do. */
+function narrationSummary() {
+  const s = narration.status();
+  return `${s.catalogue} · audio ${s.unlocked ? 'unlocked' : 'locked'} · ${s.last}`;
 }
 
 function openToneSheet() {
@@ -1012,8 +1025,15 @@ export function applyTheme() {
 export function bind() {
   $$('[data-nav]').forEach(btn => btn.addEventListener('click', () => setView(btn.dataset.nav)));
 
-  $('#playHero').addEventListener('click', () => { speech.unlock(); player.toggle(); });
-  $('#miniPlay').addEventListener('click', e => { e.stopPropagation(); speech.unlock(); player.toggle(); });
+  // Both engines have to be released inside the gesture itself: iOS grants
+  // media permission to the element the user touched, and only for this turn
+  // of the event loop. Anything awaited first and the permission is gone.
+  $('#playHero').addEventListener('click', () => {
+    speech.unlock(); narration.unlock(); player.toggle();
+  });
+  $('#miniPlay').addEventListener('click', e => {
+    e.stopPropagation(); speech.unlock(); narration.unlock(); player.toggle();
+  });
   $('#mini').addEventListener('click', () => setView('listen'));
 
   $('#prevVerse').addEventListener('click', () => player.stepVerse(-1));

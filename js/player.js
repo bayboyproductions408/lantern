@@ -203,10 +203,20 @@ async function run() {
     const recorded = await narration.prepare(translation, data.slug, data.chapter);
     if (mine !== runId || !playing) return;
 
-    let finished;
+    let finished = false;
+    let spoken = true;              // whether the synthesiser did the reading
+
     if (recorded) {
-      finished = await narration.playVerse(verseIndex, { rate });
-    } else {
+      const outcome = await narration.playVerse(verseIndex, { rate });
+      if (mine !== runId || !playing) return;
+      // A cancellation is the listener pausing or skipping — stop quietly. A
+      // failure is the recording not playing, which must not end the session:
+      // fall through and let the synthesiser read this verse instead.
+      if (outcome === 'cancelled') return;
+      if (outcome === 'done') { finished = true; spoken = false; }
+    }
+
+    if (!finished) {
       // Only an explicit choice is stored; otherwise take the best voice the
       // device currently offers, which may have improved since the app opened.
       const voiceURI = voiceByLang[lang] ?? speech.bestVoice(lang)?.uri;
@@ -218,7 +228,7 @@ async function run() {
     // A beat between verses, so the reading does not run together. The
     // recording already carries its own pacing, so this applies only to the
     // synthesised fallback.
-    if (!recorded) {
+    if (spoken) {
       const settled = await speech.pause(speech.tone(tone).versePause);
       if (!settled || mine !== runId || !playing) return;
     }
