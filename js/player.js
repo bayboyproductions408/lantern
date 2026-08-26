@@ -25,6 +25,10 @@ let runId = 0;
 let sleepTimer = null;
 let sleepUntil = null;
 let stopAtChapterEnd = false;
+// Which engine actually read the last verse. Narration substituting itself
+// invisibly is what made a broken build indistinguishable from a working one,
+// so the reader is told which voice it is hearing.
+let source = null;             // 'recording' | 'device' | null
 
 export function current() {
   const { position, translation } = store.get();
@@ -37,6 +41,7 @@ export function current() {
     verses: chapterData?.verses ?? [],
     ref: chapterData ? `${chapterData.name} ${chapterData.chapter}` : '',
     loaded: Boolean(chapterData),
+    source,
   };
 }
 
@@ -215,6 +220,9 @@ async function run() {
       if (outcome === 'cancelled') return;
       if (outcome === 'done') { finished = true; spoken = false; }
     }
+
+    source = finished ? 'recording' : 'device';
+    emit('change', current());
 
     if (!finished) {
       // Only an explicit choice is stored; otherwise take the best voice the

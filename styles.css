@@ -90,6 +90,11 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .now-kicker { margin: 0; font-size: 12.5px; letter-spacing: 1.3px; text-transform: uppercase; color: var(--accent); font-weight: 680; }
 .now-ref { font-family: var(--serif); font-size: 38px; margin: 8px 0 4px; letter-spacing: -.5px; line-height: 1.1; }
 .now-sub { margin: 0; color: var(--muted); font-size: 14px; }
+/* Which engine is reading. A recording quietly substituting itself is what
+   made a broken build indistinguishable from a working one, so it is stated. */
+.now-source { margin: 6px 0 0; font-size: 12px; letter-spacing: .02em; min-height: 15px; }
+.now-source.is-recording { color: var(--accent); }
+.now-source.is-device { color: var(--muted); }
 
 .play-hero {
   width: 104px; height: 104px; margin: 24px auto 6px; border-radius: 50%;

@@ -110,6 +110,15 @@ export function renderNow() {
 
   $('#nowRef').textContent = c.ref || '—';
   $('#nowSub').textContent = t ? t.name : '';
+
+  // Say which voice is actually reading. The recording substituting itself
+  // silently is exactly what made a broken build look like a working one.
+  const src = c.source;
+  $('#nowSource').textContent =
+    src === 'recording' ? 'Recorded narration'
+    : src === 'device' ? 'Device voice — no recording playing'
+    : '';
+  $('#nowSource').className = `now-source${src ? ` is-${src}` : ''}`;
   $('#nowKicker').textContent = player.isPlaying()
     ? 'Now playing'
     : store.get().hasListened ? 'Continue listening' : 'Start listening';
@@ -442,7 +451,13 @@ function renderSettings() {
   host.append(
     group('Listening',
       row('Translation', lib.TRANSLATIONS[state.translation].name, el('span', { class: 'val', text: lib.TRANSLATIONS[state.translation].abbr }), openTranslationSheet),
-      row('Narrator voice', voice ? voice.name : 'System default', el('span', { class: 'val', text: voice ? QUALITY_LABEL[voice.quality] : '' }), openVoiceSheet),
+      // Named for what it actually controls. It only applies where no
+      // recording exists, and a picker that appears to govern the reading but
+      // silently does nothing is worse than no picker at all.
+      row('Fallback device voice',
+        voice ? `${voice.name} — used only where there is no recording` : 'System default',
+        el('span', { class: 'val', text: voice ? QUALITY_LABEL[voice.quality] : '' }),
+        openVoiceSheet),
       row('Reading tone', speech.tone(state.tone).note, el('span', { class: 'val', text: speech.tone(state.tone).label }), openToneSheet),
       row('Speed', 'How fast the reading is spoken', el('span', { class: 'val', text: `${state.rate.toFixed(1)}×` }), openSpeedSheet),
       row('Keep playing', 'Roll into the next chapter automatically', toggleSwitch(state.autoAdvance), () => {
