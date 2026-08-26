@@ -634,13 +634,20 @@ function openVoiceSheet() {
   const tName = lib.TRANSLATIONS[translation].name;
 
   const subtitle = narrated
-    ? `${tName} is read by a recorded narrator. These voices are only used if a recording cannot be reached.`
+    ? `${tName} is read by one recorded narrator, on every chapter.`
     : all.length
       ? 'Listed best first. Lifelike voices sound close to a person reading.'
       : `No ${lang === 'es' ? 'Spanish' : 'English'} voices are installed on this device.`;
 
   openSheet('Voice', subtitle, sheet => {
     if (narrated) {
+      // Only the recording is offered, because only the recording can be
+      // heard. The device voices still exist underneath as an offline
+      // fallback, but listing them here meant tapping one lit it up and
+      // changed nothing audible. A control that answers a touch and does
+      // nothing reads as broken however carefully the text above it explains
+      // itself, so the choice is withdrawn rather than annotated.
+      const backup = activeVoice();
       sheet.append(
         el('div', { class: 'opt is-on', style: 'cursor:default' },
           el('span', {},
@@ -648,9 +655,12 @@ function openVoiceSheet() {
             el('small', { text: `Every chapter of ${tName}` })),
           el('span', { class: 'val', text: 'In use' })
         ),
-        el('p', { class: 'genre-head', style: 'margin-top:18px',
-          text: 'If a recording cannot be reached' })
+        el('p', { class: 'muted', style: 'margin-top:14px',
+          text: backup
+            ? `One narrator reads all of ${tName}. If a chapter has not downloaded and you are offline, your device fills in with ${backup.name}.`
+            : `One narrator reads all of ${tName}.` })
       );
+      return;
     }
 
     const list = el('div', { class: 'opt-list' });
@@ -670,7 +680,7 @@ function openVoiceSheet() {
     if (!all.length) {
       sheet.append(el('p', { class: 'muted', style: 'margin-top:14px',
         text: 'Add one in your system speech settings, then reopen Lantern. Until then this translation cannot be read aloud.' }));
-    } else if (!narrated && speech.onlyBasicVoices(lang)) {
+    } else if (speech.onlyBasicVoices(lang)) {
       // Windows ships only basic voices to Chrome. Edge exposes Microsoft's
       // "Natural" neural voices, which are a different class of quality.
       sheet.append(el('p', { class: 'muted', style: 'margin-top:14px',
