@@ -12,6 +12,10 @@
     "backgroundColor": "#14110f"
   },
   "plugins": {
+    "CapacitorHttp": {
+      "_comment": "Routes fetch through native. Needed because the narration audio is served by GitHub as application/octet-stream with Content-Disposition: attachment, which iOS refuses to play in a media element, and which fetch() cannot read either because that host sends no CORS headers. Going native sidesteps both.",
+      "enabled": true
+    },
     "SplashScreen": {
       "launchShowDuration": 800,
       "backgroundColor": "#14110f",

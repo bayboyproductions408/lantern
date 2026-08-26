@@ -103,6 +103,53 @@ function audio() {
   return el;
 }
 
+let objectUrl = null;          // blob URL currently held, so it can be freed
+
+function revokeCurrent() {
+  if (objectUrl) {
+    try { URL.revokeObjectURL(objectUrl); } catch { /* already gone */ }
+    objectUrl = null;
+  }
+}
+
+function base64ToBlob(b64, type) {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new Blob([bytes], { type });
+}
+
+/**
+ * A source the media element will actually accept.
+ *
+ * GitHub serves release assets as `application/octet-stream` with
+ * `Content-Disposition: attachment`. Desktop browsers sniff the content and
+ * play it anyway; iOS honours the header and refuses, which is why the audio
+ * downloaded on device but never played. On native the bytes are therefore
+ * fetched through Capacitor's HTTP plugin — which also sidesteps the missing
+ * CORS headers — and handed to the element as a blob typed audio/mp4.
+ */
+async function sourceFor(url) {
+  if (!window.Capacitor?.isNativePlatform?.()) return url;
+
+  const http = window.Capacitor?.Plugins?.CapacitorHttp;
+  if (!http) { note('CapacitorHttp unavailable — using url'); return url; }
+
+  try {
+    const res = await http.get({ url, responseType: 'blob' });
+    const data = res && res.data;
+    if (!data) { note('native fetch returned no data'); return null; }
+    const blob = typeof data === 'string'
+      ? base64ToBlob(data, 'audio/mp4')
+      : new Blob([data], { type: 'audio/mp4' });
+    if (!blob.size) { note('native fetch returned empty blob'); return null; }
+    return URL.createObjectURL(blob);
+  } catch (err) {
+    note(`native fetch failed: ${err && err.message ? err.message : err}`);
+    return null;
+  }
+}
+
 /** Fetches a chapter's audio and its verse offsets. Resolves false when the
  *  chapter has no recording or the network is unavailable. */
 export async function prepare(translation, book, chapter) {
@@ -126,18 +173,23 @@ export async function prepare(translation, book, chapter) {
 
     if (!manifest.release) { note('book has no release assigned'); return false; }
 
-    // Deliberately no wait for loadedmetadata here. iOS will not load media
-    // outside a user gesture — preload is ignored and load() does nothing — so
-    // waiting for metadata timed out on every chapter and fell back to speech
-    // every time. The recording is committed to optimistically; if it turns
-    // out not to play, playVerse reports it and the caller falls back for that
-    // verse instead.
+    const url = `${RELEASES}/${manifest.release}/${translation}-${book}-${chapter}.m4a`;
+    const src = await sourceFor(url);
+    if (!src) { loaded = null; return false; }
+
+    // Deliberately no wait for loadedmetadata. iOS will not load media outside
+    // a user gesture — preload is ignored and load() does nothing — so waiting
+    // for metadata timed out on every chapter. The recording is committed to
+    // optimistically; if it turns out not to play, playVerse reports it and
+    // the caller falls back for that verse instead.
     const a = audio();
-    a.src = `${RELEASES}/${manifest.release}/${translation}-${book}-${chapter}.m4a`;
+    revokeCurrent();
+    objectUrl = src.startsWith('blob:') ? src : null;
+    a.src = src;
     a.load();
 
     loaded = { translation, book, chapter, offsets: entry.verses, duration: entry.duration };
-    note(`prepared ${translation}/${book} ${chapter}`);
+    note(`prepared ${translation}/${book} ${chapter}${objectUrl ? ' (blob)' : ' (url)'}`);
     return true;
   } catch (err) {
     note(`prepare failed: ${err && err.message ? err.message : err}`);
@@ -231,6 +283,7 @@ export function cancel() {
 export function reset() {
   cancel();
   loaded = null;
+  revokeCurrent();
   if (el) { el.removeAttribute('src'); el.load(); }
 }
 
