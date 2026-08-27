@@ -199,13 +199,14 @@ async function run() {
     emit('change', current());
     updateMediaSession();
 
-    const { rate, voiceByLang, tone, translation } = store.get();
+    const { rate, voiceByLang, narratorBy, tone, translation } = store.get();
     const lang = lib.langOf(translation);
 
     // A recording is always preferred, but never required: books that have
     // not been narrated yet, and any device that is offline, fall through to
     // on-device speech and the app behaves exactly as it did before.
-    const recorded = await narration.prepare(translation, data.slug, data.chapter);
+    const recorded = await narration.prepare(
+      translation, data.slug, data.chapter, narratorBy[translation] ?? null);
     if (mine !== runId || !playing) return;
 
     let finished = false;
@@ -275,6 +276,16 @@ export function setRate(rate) {
 export function setVoice(uri) {
   const lang = lib.langOf(store.get().translation);
   store.set({ voiceByLang: { ...store.get().voiceByLang, [lang]: uri } });
+  if (playing) restart();
+}
+
+/** Picks the recorded narrator for the current translation. The loaded
+ *  chapter belongs to the previous narrator, so it is dropped rather than
+ *  reused — otherwise the change would not be heard until the next chapter. */
+export function setNarrator(id) {
+  const translation = store.get().translation;
+  store.set({ narratorBy: { ...store.get().narratorBy, [translation]: id } });
+  narration.reset();
   if (playing) restart();
 }
 

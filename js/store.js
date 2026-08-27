@@ -15,7 +15,11 @@ const DEFAULTS = {
   position: { book: 'genesis', chapter: 1, verse: 0 },
   rate: 1,
   tone: 'soothing',      // prosody preset; see speech.js TONES
-  voiceByLang: {},         // { en: voiceURI, es: voiceURI }
+  voiceByLang: {},         // { en: voiceURI, es: voiceURI } — device speech
+  // Which recorded narrator reads each translation. Keyed by translation
+  // rather than language: the same language can be read by different people
+  // in different translations, and the choice should survive switching.
+  narratorBy: {},          // { kjv: 'cori', rvr: 'davefx' }
   theme: 'dark',
   autoAdvance: true,
   hasListened: false,

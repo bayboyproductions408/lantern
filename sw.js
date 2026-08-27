@@ -55,6 +55,25 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
+  // The narration catalogue is the one file under /data/ that changes: it
+  // grows every time a narrator finishes recording. Cache-first would pin an
+  // install to whatever narrators existed the day it was opened, so this is
+  // network-first, falling back to the cached copy when offline.
+  if (url.pathname.endsWith('/narration/catalogue.json')) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(TEXT_CACHE).then(cache => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.open(TEXT_CACHE).then(cache => cache.match(request)))
+    );
+    return;
+  }
+
   // Scripture: cache-first and kept forever. This is what the premium
   // "download for offline" flow fills, simply by fetching every book once.
   if (url.pathname.includes('/data/')) {

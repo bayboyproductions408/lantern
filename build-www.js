@@ -26,7 +26,37 @@ const OUT = 'www';
 const COPY_DIRS = ['js', 'data', 'icons'];
 const COPY_FILES = ['index.html', 'styles.css'];
 
+// Only the default narrator's verse offsets are bundled. The others are served
+// from GitHub Pages and fetched when that narrator is first chosen — fifteen
+// narrators would otherwise add megabytes of JSON to the download for choices
+// most listeners never make. See js/narration.js.
+const bundledNarration = (() => {
+  const keep = new Set();
+  try {
+    const registry = JSON.parse(fs.readFileSync('narration-voices.json', 'utf8'));
+    for (const [translation, voices] of Object.entries(registry)) {
+      if (translation.startsWith('_')) continue;
+      for (const [id, spec] of Object.entries(voices)) {
+        if (spec && spec.default) keep.add(path.join('data', 'narration', translation, id));
+      }
+    }
+  } catch {
+    /* no registry — fall through and bundle everything, as before */
+  }
+  return keep;
+})();
+
+/** True for a narrator directory that is not the default one. */
+function skipNarration(src) {
+  const parts = path.normalize(src).split(path.sep);
+  const i = parts.indexOf('narration');
+  // data/narration/<translation>/<voice> — only that exact depth is a voice.
+  if (i < 1 || parts[i - 1] !== 'data' || parts.length !== i + 3) return false;
+  return bundledNarration.size > 0 && !bundledNarration.has(path.join(...parts));
+}
+
 function copyDir(src, dest) {
+  if (skipNarration(src)) return;
   fs.mkdirSync(dest, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
     const from = path.join(src, entry.name);

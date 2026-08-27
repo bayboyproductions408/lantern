@@ -13,19 +13,25 @@
 
 // Audio is served from GitHub Releases, which supports range requests but
 // sends no CORS headers. A media element does not need them, so the audio
-// streams fine — but fetch() of anything on that host is blocked. The verse
-// offsets therefore ship inside the app rather than being fetched alongside
-// the audio, which also makes them instant and available offline.
+// streams fine — but fetch() of anything on that host is blocked, so the verse
+// offsets cannot be fetched from beside the audio and travel separately.
 // A release holds at most 1000 assets and the KJV alone needs 1189 chapters,
 // so books are spread across several releases. Each book's manifest records
-// which one holds it.
+// which one holds it, and under what filename.
 const RELEASES = 'https://github.com/bayboyproductions408/lantern/releases/download';
+
+// A translation can be read by several narrators. The default narrator's verse
+// offsets are bundled in the app so listening works with no network at all;
+// the others are fetched from GitHub Pages, which — unlike Releases — does send
+// CORS headers. Bundling all of them instead would add megabytes of JSON to
+// the download for choices most listeners never make.
+const PAGES = 'https://bayboyproductions408.github.io/lantern/data/narration';
 
 /* ── What has been recorded ───────────────────────────────────── */
 
-let catalogue = null;          // { kjv: { john: 21, ... }, ... }
+let catalogue = null;          // { kjv: { voices: [...], books: { john: 21 } } }
 let cataloguePromise = null;
-const manifests = new Map();   // `${translation}/${book}` -> manifest
+const manifests = new Map();   // `${translation}/${voice}/${book}` -> manifest
 
 /** Loads the list of recorded books once. Never rejects: no catalogue simply
  *  means no narration, which is a supported state rather than an error. */
@@ -41,12 +47,32 @@ export function loadCatalogue() {
 /** True when this exact chapter has a recording. Synchronous by design: the
  *  player asks per verse and must not stall on a network round trip. */
 export function has(translation, book, chapter) {
-  const chapters = catalogue?.[translation]?.[book];
+  const chapters = catalogue?.[translation]?.books?.[book];
   return Boolean(chapters) && chapter >= 1 && chapter <= chapters;
 }
 
 export function anyFor(translation) {
-  return Boolean(catalogue?.[translation] && Object.keys(catalogue[translation]).length);
+  return voicesFor(translation).length > 0;
+}
+
+/** Every narrator who has recorded this translation in full. A narrator part
+ *  way through recording is not listed — see build-narration-index.js. */
+export function voicesFor(translation) {
+  return catalogue?.[translation]?.voices ?? [];
+}
+
+/** The narrator used when the listener has not chosen one, and the one who
+ *  covers any chapter a chosen narrator turns out not to reach. */
+export function defaultVoice(translation) {
+  const list = voicesFor(translation);
+  return list.find(v => v.default) ?? list[0] ?? null;
+}
+
+/** Resolves a stored choice against what is actually available now. A voice
+ *  can disappear between releases; falling back beats playing nothing. */
+export function resolveVoice(translation, wanted) {
+  const list = voicesFor(translation);
+  return list.find(v => v.id === wanted) ?? defaultVoice(translation);
 }
 
 /* ── Current chapter ──────────────────────────────────────────── */
@@ -66,7 +92,7 @@ export function status() {
   return {
     catalogue: catalogue ? `${Object.keys(catalogue).length} translations` : 'not loaded',
     unlocked,
-    chapter: loaded ? `${loaded.translation}/${loaded.book} ${loaded.chapter}` : 'none',
+    chapter: loaded ? `${loaded.translation}/${loaded.using}/${loaded.book} ${loaded.chapter}` : 'none',
     last: lastNote,
   };
 }
@@ -150,30 +176,76 @@ async function sourceFor(url) {
   }
 }
 
-/** Fetches a chapter's audio and its verse offsets. Resolves false when the
- *  chapter has no recording or the network is unavailable. */
-export async function prepare(translation, book, chapter) {
-  if (loaded && loaded.translation === translation &&
+/**
+ * A book's verse offsets, for one narrator.
+ *
+ * The default narrator's manifests ship inside the app, so they resolve
+ * offline and instantly. Every other narrator's are fetched from GitHub Pages
+ * the first time that book is played and then kept for the session. Returns
+ * null rather than throwing: a manifest that cannot be reached means falling
+ * back to the default narrator, not failing the chapter.
+ */
+async function manifestFor(translation, voice, book) {
+  const key = `${translation}/${voice}/${book}`;
+  if (manifests.has(key)) return manifests.get(key);
+
+  const bundled = defaultVoice(translation)?.id === voice;
+  const url = bundled
+    ? `data/narration/${translation}/${voice}/${book}.json`
+    : `${PAGES}/${translation}/${voice}/${book}.json`;
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) { note(`manifest ${key}: HTTP ${res.status}`); return null; }
+    const m = await res.json();
+    manifests.set(key, m);
+    return m;
+  } catch (err) {
+    note(`manifest ${key} failed: ${err && err.message ? err.message : err}`);
+    return null;
+  }
+}
+
+/**
+ * Fetches a chapter's audio and its verse offsets for the chosen narrator.
+ *
+ * Resolves false when the chapter has no recording at all or the audio cannot
+ * be fetched. A chosen narrator whose manifest cannot be reached — offline, on
+ * a first play of an alternate voice — falls back to the default narrator
+ * rather than dropping to the synthesiser: another person reading is always
+ * closer to what the listener wanted than a robot reading.
+ */
+export async function prepare(translation, book, chapter, wanted = null) {
+  const voice = (resolveVoice(translation, wanted) ?? {}).id;
+  if (!voice) return false;
+
+  if (loaded && loaded.translation === translation && loaded.voice === voice &&
       loaded.book === book && loaded.chapter === chapter) {
     return true;
   }
   if (!has(translation, book, chapter)) return false;
 
   try {
-    const key = `${translation}/${book}`;
-    let manifest = manifests.get(key);
+    let using = voice;
+    let manifest = await manifestFor(translation, using, book);
     if (!manifest) {
-      const res = await fetch(`data/narration/${translation}/${book}.json`);
-      if (!res.ok) return false;
-      manifest = await res.json();
-      manifests.set(key, manifest);
+      const fallback = defaultVoice(translation)?.id;
+      if (!fallback || fallback === using) return false;
+      note(`falling back to ${fallback}`);
+      using = fallback;
+      manifest = await manifestFor(translation, using, book);
+      if (!manifest) return false;
     }
+
     const entry = manifest.chapters.find(c => c.chapter === chapter);
     if (!entry) return false;
 
     if (!manifest.release) { note('book has no release assigned'); return false; }
 
-    const url = `${RELEASES}/${manifest.release}/${translation}-${book}-${chapter}.m4a`;
+    // The asset prefix is recorded per book rather than rebuilt here: the two
+    // narrators that predate voices keep their original filenames.
+    const prefix = manifest.prefix ?? `${translation}-${book}`;
+    const url = `${RELEASES}/${manifest.release}/${prefix}-${chapter}.m4a`;
     const src = await sourceFor(url);
     if (!src) { loaded = null; return false; }
 
@@ -188,8 +260,11 @@ export async function prepare(translation, book, chapter) {
     a.src = src;
     a.load();
 
-    loaded = { translation, book, chapter, offsets: entry.verses, duration: entry.duration };
-    note(`prepared ${translation}/${book} ${chapter}${objectUrl ? ' (blob)' : ' (url)'}`);
+    // `voice` is the narrator asked for, `using` the one actually loaded; they
+    // differ only on a fallback. Keying on `voice` stops prepare() reloading
+    // the same audio every verse when a fallback is in force.
+    loaded = { translation, voice, using, book, chapter, offsets: entry.verses, duration: entry.duration };
+    note(`prepared ${translation}/${using}/${book} ${chapter}${objectUrl ? ' (blob)' : ' (url)'}`);
     return true;
   } catch (err) {
     note(`prepare failed: ${err && err.message ? err.message : err}`);
@@ -265,7 +340,7 @@ export function playVerse(index, { rate = 1 } = {}) {
       // Playback starting here is the authoritative signal, so correct the
       // note rather than leaving a stale failure on the diagnostics row.
       unlocked = true;
-      note(`playing ${loaded.translation}/${loaded.book} ${loaded.chapter}`);
+      note(`playing ${loaded.translation}/${loaded.using}/${loaded.book} ${loaded.chapter}`);
     }).catch(err => {
       clearStall();
       note(`play rejected: ${err && err.name ? err.name : 'unknown'}`);
@@ -289,4 +364,10 @@ export function reset() {
 
 export function isLoaded() {
   return Boolean(loaded);
+}
+
+/** The narrator actually playing, which is not always the one chosen — a
+ *  fallback is exactly the case the listener should be able to see. */
+export function playingVoice() {
+  return loaded ? loaded.using : null;
 }

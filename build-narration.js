@@ -1,7 +1,14 @@
 // Renders pre-recorded narration for a translation, one file per chapter.
 //
-//   node build-narration.js kjv            all 66 books
-//   node build-narration.js kjv john       a single book
+//   node build-narration.js kjv cori            all 66 books
+//   node build-narration.js kjv cori john       a single book
+//   node build-narration.js kjv cori --workers 12
+//
+// A translation can be read by several narrators, so every render is filed
+// under the voice that produced it. Which model each voice uses - and whether
+// it needs a speaker id out of a multi-speaker model - lives in
+// narration-voices.json, so adding a narrator is a data change, not a code
+// change.
 //
 // Why per-chapter files with a timing map, rather than one file per verse:
 // the player tracks position and highlights by verse, so it needs to know
@@ -20,11 +27,37 @@ const { spawnSync } = require('child_process');
 const PIPER = process.env.PIPER;
 const FFMPEG = process.env.FFMPEG || 'ffmpeg';
 const FFPROBE = process.env.FFPROBE || 'ffprobe';
-const MODEL = process.env.PIPER_MODEL;
-const CONFIG = process.env.PIPER_CONFIG || (MODEL ? MODEL + '.json' : null);
+// Where the .onnx models live. PIPER_MODEL still works for a one-off render of
+// a model that is not in the registry.
+const MODEL_DIR = process.env.PIPER_MODELS;
 
-const TRANSLATION = process.argv[2] || 'kjv';
-const ONLY_BOOK = process.argv[3] || null;
+const argv = process.argv.slice(2).filter(a => a !== '--');
+const flag = name => {
+  const i = argv.indexOf(name);
+  return i === -1 ? null : argv[i + 1];
+};
+const positional = argv.filter((a, i) =>
+  !a.startsWith('--') && !(i > 0 && argv[i - 1].startsWith('--')));
+
+const TRANSLATION = positional[0] || 'kjv';
+const VOICE = positional[1] || null;
+const ONLY_BOOK = positional[2] || null;
+const WORKERS = Math.max(1, parseInt(flag('--workers') || '1', 10));
+const SHARD = flag('--shard');
+
+const REGISTRY = JSON.parse(fs.readFileSync('narration-voices.json', 'utf8'));
+const voices = REGISTRY[TRANSLATION];
+if (!voices) { console.error(`no voices registered for ${TRANSLATION}`); process.exit(1); }
+if (!VOICE || !voices[VOICE]) {
+  console.error(`usage: node build-narration.js ${TRANSLATION} <voice> [book]`);
+  console.error(`voices: ${Object.keys(voices).filter(v => !v.startsWith('_')).join(', ')}`);
+  process.exit(1);
+}
+const SPEC = voices[VOICE];
+
+const MODEL = process.env.PIPER_MODEL ||
+  (MODEL_DIR ? path.join(MODEL_DIR, SPEC.model + '.onnx') : null);
+const CONFIG = process.env.PIPER_CONFIG || (MODEL ? MODEL + '.json' : null);
 
 // Matches js/speech.js — the audio must say what the app would have said.
 const SMALL_CAPS = /\b(LORD|GOD|JEHOVAH|CHRIST|JESUS|KING OF KINGS)\b/g;
@@ -39,8 +72,8 @@ function speakable(text, lang) {
 }
 
 const LANG = TRANSLATION === 'rvr' ? 'es' : 'en';
-const OUT_ROOT = path.join('narration', TRANSLATION);
-const TMP_ROOT = path.join(process.env.TEMP || '.', 'lantern-narration', TRANSLATION);
+const OUT_ROOT = path.join('narration', TRANSLATION, VOICE);
+const TMP_ROOT = path.join(process.env.TEMP || '.', 'lantern-narration', TRANSLATION, VOICE);
 
 function sh(cmd, args, opts = {}) {
   const r = spawnSync(cmd, args, { encoding: 'utf8', maxBuffer: 1 << 28, ...opts });
@@ -69,7 +102,11 @@ function renderBook(slug) {
   book.chapters.forEach((verses, ci) => {
     verses.forEach((text, vi) => {
       const out = path.join(tmp, `c${ci + 1}-v${vi + 1}.wav`).replace(/\\/g, '/');
-      lines.push(JSON.stringify({ text: speakable(text, LANG), output_file: out }));
+      lines.push(JSON.stringify({
+        text: speakable(text, LANG),
+        output_file: out,
+        ...(SPEC.speaker !== undefined ? { speaker_id: SPEC.speaker } : {}),
+      }));
     });
   });
 
@@ -81,7 +118,7 @@ function renderBook(slug) {
   if (r.status !== 0) throw new Error(`piper failed on ${slug}:\n${(r.stderr || '').slice(-500)}`);
 
   // Concatenate each chapter and record where every verse starts.
-  const manifest = { translation: TRANSLATION, book: slug, name: book.name, chapters: [] };
+  const manifest = { translation: TRANSLATION, voice: VOICE, book: slug, name: book.name, chapters: [] };
   const bookOut = path.join(OUT_ROOT, slug);
   fs.mkdirSync(bookOut, { recursive: true });
 
@@ -123,9 +160,10 @@ function renderBook(slug) {
 /* ── Run ──────────────────────────────────────────────────────── */
 
 if (!PIPER || !MODEL) {
-  console.error('Set PIPER (path to piper executable) and PIPER_MODEL (path to .onnx).');
+  console.error('Set PIPER (path to piper.exe) and PIPER_MODELS (directory of .onnx files).');
   process.exit(1);
 }
+if (!fs.existsSync(MODEL)) { console.error(`no such model: ${MODEL}`); process.exit(1); }
 
 const index = JSON.parse(fs.readFileSync(path.join('data', `${TRANSLATION}-index.json`), 'utf8'));
 const slugs = (index.books || index).map(b => b.slug || b);
@@ -148,8 +186,63 @@ function alreadyRendered(slug) {
 }
 
 fs.mkdirSync(OUT_ROOT, { recursive: true });
+
+// Piper is single-threaded, so one process leaves fifteen cores idle and a
+// whole-Bible render takes most of a day. Books are independent, so the work
+// shards across processes - each child takes every Nth book, and the parent
+// only reports. Sharding by book rather than by chapter keeps each book's
+// manifest written by exactly one process.
+if (WORKERS > 1 && !SHARD) {
+  const { spawn } = require('child_process');
+  const pending = todo.filter(s => !alreadyRendered(s));
+  if (!pending.length) {
+    console.log('every book already rendered');
+    process.exit(0);
+  }
+  const n = Math.min(WORKERS, pending.length);
+  console.log(`${pending.length} books to render for ${TRANSLATION}/${VOICE} across ${n} workers
+`);
+
+  let done = 0, failed = 0;
+  const started = Date.now();
+  const children = [];
+  for (let i = 0; i < n; i++) {
+    const args = [__filename, TRANSLATION, VOICE, '--shard', `${i}/${n}`];
+    const c = spawn(process.execPath, args, { stdio: ['ignore', 'pipe', 'pipe'] });
+    let buf = '';
+    c.stdout.on('data', d => {
+      buf += d;
+      const parts = buf.split(/\r?\n/);
+      buf = parts.pop();
+      for (const line of parts) if (line.trim()) console.log(`[${i}] ${line}`);
+    });
+    c.stderr.on('data', d => process.stderr.write(`[${i}] ${d}`));
+    c.on('exit', code => {
+      if (code !== 0) failed++;
+      if (++done === n) {
+        const mins = ((Date.now() - started) / 60000).toFixed(1);
+        console.log(`
+all workers finished in ${mins} min${failed ? `, ${failed} failed` : ''}`);
+        process.exit(failed ? 1 : 0);
+      }
+    });
+    children.push(c);
+  }
+  const stop = () => children.forEach(c => c.kill());
+  process.on('SIGINT', stop);
+  process.on('SIGTERM', stop);
+  return;
+}
+
+let shardIndex = 0, shardCount = 1;
+if (SHARD) {
+  const [i, n] = SHARD.split('/').map(Number);
+  shardIndex = i; shardCount = n;
+}
+
 let totalSecs = 0, totalBytes = 0;
-for (const slug of todo) {
+for (const [n, slug] of todo.entries()) {
+  if (shardCount > 1 && n % shardCount !== shardIndex) continue;
   if (alreadyRendered(slug)) {
     console.log(`${slug.padEnd(18)} already rendered, skipping`);
     continue;

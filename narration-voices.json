@@ -1,0 +1,24 @@
+{
+  "_comment": "Every narrator Lantern can read with. `model` and `speaker` drive build-narration.js; the rest is what the listener sees. Licences are checked before a voice is added: the app carries ads, so anything non-commercial (CC BY-NC) or ShareAlike is refused no matter how good it sounds. `default` marks the narrator whose manifests ship inside the app and who covers any chapter another narrator has not reached yet.",
+
+  "kjv": {
+    "cori":   { "name": "Cori",   "origin": "British English",  "licence": "Public domain", "model": "cori",      "default": true, "legacyNames": true },
+    "linda":  { "name": "Linda",  "origin": "American English", "licence": "Public domain", "model": "ljspeech" },
+    "abel":   { "name": "Abel",   "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 605 },
+    "reuben": { "name": "Reuben", "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 297 },
+    "silas":  { "name": "Silas",  "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 561 },
+    "jonah":  { "name": "Jonah",  "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 363 },
+    "hannah": { "name": "Hannah", "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 44 },
+    "miriam": { "name": "Miriam", "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 77 },
+    "naomi":  { "name": "Naomi",  "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 143 },
+    "esther": { "name": "Esther", "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 737 }
+  },
+
+  "rvr": {
+    "davefx":  { "name": "Davefx",  "origin": "Espana", "licence": "CC0",        "model": "davefx", "default": true, "legacyNames": true },
+    "mateo":   { "name": "Mateo",   "origin": "Mexico", "licence": "Apache 2.0", "model": "esclaude" },
+    "alonso":  { "name": "Alonso",  "origin": "Mexico", "licence": "Unlicense",  "model": "esald" },
+    "pilar":   { "name": "Pilar",   "origin": "Espana", "licence": "CC BY 3.0",  "model": "essharvard", "speaker": 0 },
+    "rodrigo": { "name": "Rodrigo", "origin": "Espana", "licence": "CC BY 3.0",  "model": "essharvard", "speaker": 1 }
+  }
+}

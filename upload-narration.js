@@ -133,27 +133,49 @@ async function loadReleases() {
 /** Books, each with the chapter files it needs hosted. Grouped rather than
  *  flat so a book is never split across two releases — the app resolves one
  *  release per book. */
+const REGISTRY = JSON.parse(fs.readFileSync('narration-voices.json', 'utf8'));
+
+/** The asset basename a book's chapters are stored under.
+ *
+ *  The first two narrators were uploaded before Lantern had more than one
+ *  voice, so their ~2,100 assets are named without a voice. Renaming them
+ *  would mean re-uploading gigabytes to no benefit, so those two keep their
+ *  original names and every later narrator carries its voice in the name.
+ *  The manifest records whichever prefix applies, so the app never has to
+ *  know this history. */
+function prefixFor(translation, voice, book) {
+  const spec = REGISTRY[translation] && REGISTRY[translation][voice];
+  return spec && spec.legacyNames
+    ? `${translation}-${book}`
+    : `${translation}-${voice}-${book}`;
+}
+
 function collect() {
   const books = [];
   if (!fs.existsSync(SRC)) return books;
   for (const translation of fs.readdirSync(SRC)) {
     const trDir = path.join(SRC, translation);
     if (!fs.statSync(trDir).isDirectory()) continue;
-    for (const book of fs.readdirSync(trDir)) {
-      const bookDir = path.join(trDir, book);
-      if (!fs.statSync(bookDir).isDirectory()) continue;
-      // Only publish books whose manifest says they are complete.
-      const manifestPath = path.join(bookDir, 'index.json');
-      if (!fs.existsSync(manifestPath)) continue;
-      const m = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-      const files = [];
-      let complete = true;
-      for (const c of m.chapters) {
-        const file = path.join(bookDir, `${c.chapter}.m4a`);
-        if (!fs.existsSync(file)) { complete = false; break; }
-        files.push({ file, name: `${translation}-${book}-${c.chapter}.m4a`, size: fs.statSync(file).size });
+    for (const voice of fs.readdirSync(trDir)) {
+      const voiceDir = path.join(trDir, voice);
+      if (!fs.statSync(voiceDir).isDirectory()) continue;
+      for (const book of fs.readdirSync(voiceDir)) {
+        const bookDir = path.join(voiceDir, book);
+        if (!fs.statSync(bookDir).isDirectory()) continue;
+        // Only publish books whose manifest says they are complete.
+        const manifestPath = path.join(bookDir, 'index.json');
+        if (!fs.existsSync(manifestPath)) continue;
+        const m = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+        const prefix = prefixFor(translation, voice, book);
+        const files = [];
+        let complete = true;
+        for (const c of m.chapters) {
+          const file = path.join(bookDir, `${c.chapter}.m4a`);
+          if (!fs.existsSync(file)) { complete = false; break; }
+          files.push({ file, name: `${prefix}-${c.chapter}.m4a`, size: fs.statSync(file).size });
+        }
+        if (complete) books.push({ key: `${translation}/${voice}/${book}`, translation, voice, book, files });
       }
-      if (complete) books.push({ key: `${translation}/${book}`, translation, book, files });
     }
   }
   return books;

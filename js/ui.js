@@ -114,8 +114,10 @@ export function renderNow() {
   // Say which voice is actually reading. The recording substituting itself
   // silently is exactly what made a broken build look like a working one.
   const src = c.source;
+  const reader = narration.playingVoice();
+  const readerName = narration.voicesFor(c.translation).find(v => v.id === reader);
   $('#nowSource').textContent =
-    src === 'recording' ? 'Recorded narration'
+    src === 'recording' ? (readerName ? `Read by ${readerName.name}` : 'Recorded narration')
     : src === 'device' ? 'Device voice — no recording playing'
     : '';
   $('#nowSource').className = `now-source${src ? ` is-${src}` : ''}`;
@@ -455,12 +457,12 @@ function renderSettings() {
       // always used, and a picker that appears to govern the reading while
       // silently doing nothing is worse than no picker at all.
       row('Voice',
-        narration.anyFor(state.translation)
-          ? `Recorded narration — ${voice ? voice.name : 'device voice'} only as a fallback`
-          : voice ? `${voice.name} — no recording for this translation` : 'System default',
+        narratorSummary(state, voice),
         el('span', {
           class: 'val',
-          text: narration.anyFor(state.translation) ? 'Recorded' : (voice ? QUALITY_LABEL[voice.quality] : ''),
+          text: narration.anyFor(state.translation)
+            ? (narration.resolveVoice(state.translation, state.narratorBy[state.translation]) || {}).name || 'Recorded'
+            : (voice ? QUALITY_LABEL[voice.quality] : ''),
         }),
         openVoiceSheet),
       row('Reading tone', speech.tone(state.tone).note, el('span', { class: 'val', text: speech.tone(state.tone).label }), openToneSheet),
@@ -630,36 +632,61 @@ function openVoiceSheet() {
   // a fallback and nothing more. Presenting them as the choice of narrator —
   // when picking one changes nothing you can hear — is what made this sheet
   // look broken.
-  const narrated = narration.anyFor(translation);
+  const narrators = narration.voicesFor(translation);
+  const narrated = narrators.length > 0;
   const tName = lib.TRANSLATIONS[translation].name;
+  const chosen = narration.resolveVoice(translation, store.get().narratorBy[translation]);
 
   const subtitle = narrated
-    ? `${tName} is read by one recorded narrator, on every chapter.`
+    ? narrators.length > 1
+      ? `${narrators.length} people have recorded all of ${tName}. Pick whoever you would rather listen to.`
+      : `${tName} is read by one recorded narrator, on every chapter.`
     : all.length
       ? 'Listed best first. Lifelike voices sound close to a person reading.'
       : `No ${lang === 'es' ? 'Spanish' : 'English'} voices are installed on this device.`;
 
   openSheet('Voice', subtitle, sheet => {
     if (narrated) {
-      // Only the recording is offered, because only the recording can be
-      // heard. The device voices still exist underneath as an offline
-      // fallback, but listing them here meant tapping one lit it up and
-      // changed nothing audible. A control that answers a touch and does
-      // nothing reads as broken however carefully the text above it explains
-      // itself, so the choice is withdrawn rather than annotated.
+      // Only recorded narrators are offered. The device voices still exist
+      // underneath as an offline fallback, but listing them here meant tapping
+      // one lit it up and changed nothing audible — a control that answers a
+      // touch and does nothing reads as broken however carefully the text
+      // above it explains itself.
+      if (narrators.length > 1) {
+        const list = el('div', { class: 'opt-list' });
+        for (const v of narrators) {
+          list.append(
+            el('button', {
+              class: `opt${chosen && chosen.id === v.id ? ' is-on' : ''}`,
+              onclick: () => {
+                player.setNarrator(v.id);
+                closeSheet();
+                renderNow();
+                renderSettings();
+              },
+            },
+              el('span', {}, el('b', { text: v.name }), el('small', { text: v.origin })),
+              el('span', { class: 'val', text: v.default ? 'Original' : '' })
+            )
+          );
+        }
+        sheet.append(list);
+      } else {
+        sheet.append(
+          el('div', { class: 'opt is-on', style: 'cursor:default' },
+            el('span', {},
+              el('b', { text: narrators[0].name }),
+              el('small', { text: `Every chapter of ${tName}` })),
+            el('span', { class: 'val', text: 'In use' })
+          )
+        );
+      }
+
       const backup = activeVoice();
-      sheet.append(
-        el('div', { class: 'opt is-on', style: 'cursor:default' },
-          el('span', {},
-            el('b', { text: 'Recorded narration' }),
-            el('small', { text: `Every chapter of ${tName}` })),
-          el('span', { class: 'val', text: 'In use' })
-        ),
-        el('p', { class: 'muted', style: 'margin-top:14px',
-          text: backup
-            ? `One narrator reads all of ${tName}. If a chapter has not downloaded and you are offline, your device fills in with ${backup.name}.`
-            : `One narrator reads all of ${tName}.` })
-      );
+      if (backup) {
+        sheet.append(el('p', { class: 'muted', style: 'margin-top:14px',
+          text: `If a chapter has not downloaded and you are offline, your device fills in with ${backup.name}.` }));
+      }
       return;
     }
 
@@ -687,6 +714,21 @@ function openVoiceSheet() {
         text: 'Only basic system voices were found. For a much more natural reading, try opening Lantern in Microsoft Edge, which offers Microsoft “Natural” voices, or install additional voices in your system speech settings.' }));
     }
   });
+}
+
+/** The Settings subtitle for the Voice row: who reads, and what happens when
+ *  they cannot be reached. */
+function narratorSummary(state, voice) {
+  const list = narration.voicesFor(state.translation);
+  if (!list.length) {
+    return voice ? `${voice.name} — no recording for this translation` : 'System default';
+  }
+  const chosen = narration.resolveVoice(state.translation, state.narratorBy[state.translation]);
+  const others = list.length - 1;
+  if (!others) {
+    return `Read by ${chosen.name}${voice ? ` — ${voice.name} only as a fallback` : ''}`;
+  }
+  return `Read by ${chosen.name} — ${others} other narrator${others === 1 ? '' : 's'} available`;
 }
 
 /** One line describing what the narration engine last managed to do. */
