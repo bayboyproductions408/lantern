@@ -1,0 +1,756 @@
+==============================================================
+  kjv / linda   (17:18:19)
+==============================================================
+66 books to render for kjv/linda across 14 workers
+
+[0] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[2] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[1] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[3] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[4] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[5] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[11] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[9] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[7] C:\Dom\Claude\BibleAudio\build-narration.js:118
+  if (r.status !== 0) throw new Error(`piper failed on ${slug}:\n${(r.stderr || '').slice(-500)}`);
+                      ^
+
+Error: piper failed on ruth:
+[info] Real-time factor: 1.9223110772838945 (infer=885.2653127 sec, audio=460.5213605442177 sec)
+[2026-08-26 17:33:25.773] [piper] [info] Real-time factor: 1.9183566152731881 (infer=904.4467669 sec, audio=471.46956916099776 sec)
+[2026-08-26 17:33:39.490] [piper] [info] Real-time factor: 1.9170910701427162 (infer=918.1615986999999 sec, audio=478.9347845804989 sec)
+[2026-08-26 17:33:55.286] [piper] [info] Real-time factor: 1.915247948556579 (infer=933.9558526 sec, audio=487.6422675736962 sec)
+
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:118:29)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[8] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[6] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[13] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[10] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[12] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+
+all workers finished in 15.8 min, 14 failed
+!! kjv/linda failed
+==============================================================
+  kjv / abel   (17:34:10)
+==============================================================
+66 books to render for kjv/abel across 14 workers
+
+[5] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[3] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[11] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[2] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[0] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[4] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[8] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[13] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[9] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[7] C:\Dom\Claude\BibleAudio\build-narration.js:118
+  if (r.status !== 0) throw new Error(`piper failed on ${slug}:\n${(r.stderr || '').slice(-500)}`);
+                      ^
+
+Error: piper failed on ruth:
+ [info] Real-time factor: 1.422952656708297 (infer=33.0904575 sec, audio=23.254784580498864 sec)
+[2026-08-26 17:34:51.896] [piper] [info] Real-time factor: 1.4509622501036916 (infer=40.6148352 sec, audio=27.991655328798185 sec)
+[2026-08-26 17:35:03.903] [piper] [info] Real-time factor: 1.4606269966249898 (infer=52.6201971 sec, audio=36.02575963718821 sec)
+[2026-08-26 17:35:12.515] [piper] [info] Real-time factor: 1.4596395179462616 (infer=61.227277099999995 sec, audio=41.94684807256236 sec)
+
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:118:29)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[12] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[1] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[6] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[10] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+
+all workers finished in 1.2 min, 14 failed
+!! kjv/abel failed
+==============================================================
+  kjv / reuben   (17:35:22)
+==============================================================
+66 books to render for kjv/reuben across 14 workers
+
+[5] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[10] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[6] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[0] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[2] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[7] C:\Dom\Claude\BibleAudio\build-narration.js:118
+  if (r.status !== 0) throw new Error(`piper failed on ${slug}:\n${(r.stderr || '').slice(-500)}`);
+                      ^
+
+Error: piper failed on ruth:
+ from phoneme/id map!
+[2026-08-26 17:35:40.046] [piper] [warning] Missing "̩" (\u0329): 1 time(s)
+[2026-08-26 17:35:40.046] [piper] [info] Real-time factor: 1.423611570544517 (infer=16.9743567 sec, audio=11.92344671201814 sec)
+[2026-08-26 17:35:58.239] [piper] [info] Real-time factor: 1.3996181258935274 (infer=35.1639931 sec, audio=25.12399092970522 sec)
+[2026-08-26 17:36:05.445] [piper] [info] Real-time factor: 1.3955128696597152 (infer=42.367897299999996 sec, audio=30.36009070294785 sec)
+
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:118:29)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[3] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[11] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[9] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[13] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[12] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[8] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[1] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+[4] C:\Dom\Claude\BibleAudio\build-narration.js:80
+  if (r.error) throw new Error(`${cmd}: ${r.error.message}`);
+               ^
+
+Error: C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe: spawnSync C:/Users/domhe/AppData/Local/Temp/claude/C--Dom-Claude-BibleAudio/bb5f9ad2-c3cf-44d3-9e5f-4610869c8080/scratchpad/piper/piper/piper.exe EOF
+    at sh (C:\Dom\Claude\BibleAudio\build-narration.js:80:22)
+    at renderBook (C:\Dom\Claude\BibleAudio\build-narration.js:116:13)
+    at Object.<anonymous> (C:\Dom\Claude\BibleAudio\build-narration.js:250:13)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+
+all workers finished in 0.7 min, 14 failed
+!! kjv/reuben failed
+==============================================================
+  kjv / silas   (17:36:07)
+==============================================================
+66 books to render for kjv/silas across 14 workers
+

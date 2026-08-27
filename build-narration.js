@@ -81,7 +81,38 @@ function sh(cmd, args, opts = {}) {
   return r;
 }
 
+/**
+ * How long a verse is.
+ *
+ * Piper writes plain RIFF/PCM, where the duration is just the data chunk size
+ * over the byte rate — so it can be read from the header instead of launching
+ * ffprobe. That matters at this scale: a whole Bible is ~31,000 verses, and
+ * 31,000 process launches cost more than the synthesis of several books.
+ * Anything that is not a WAV we recognise falls back to ffprobe.
+ */
 function durationOf(file) {
+  const fd = fs.openSync(file, 'r');
+  try {
+    const head = Buffer.alloc(4096);
+    const read = fs.readSync(fd, head, 0, 4096, 0);
+    if (read > 12 && head.toString('ascii', 0, 4) === 'RIFF' && head.toString('ascii', 8, 12) === 'WAVE') {
+      let off = 12, byteRate = 0;
+      while (off + 8 <= read) {
+        const id = head.toString('ascii', off, off + 4);
+        const size = head.readUInt32LE(off + 4);
+        // fmt: format(2) channels(2) sampleRate(4) byteRate(4) — byteRate is
+        // 16 bytes past the chunk id, not 12. Reading the sample rate here
+        // instead doubles every duration, which silently shifts every verse
+        // offset in the chapter rather than failing.
+        if (id === 'fmt ') byteRate = head.readUInt32LE(off + 16);
+        if (id === 'data' && byteRate) return size / byteRate;
+        off += 8 + size + (size & 1);
+      }
+    }
+  } finally {
+    fs.closeSync(fd);
+  }
+
   const r = sh(FFPROBE, ['-v', 'error', '-show_entries', 'format=duration',
                          '-of', 'csv=p=0', file]);
   const d = parseFloat((r.stdout || '').trim());
