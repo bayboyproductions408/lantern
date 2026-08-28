@@ -125,6 +125,10 @@ for (const translation of fs.readdirSync(SRC)) {
       name: spec.name,
       origin: spec.origin,
       licence: spec.licence,
+      // Carried into the app because several of these licences require it:
+      // CC BY 4.0 and CC BY 3.0 oblige attribution, Apache 2.0 obliges the
+      // notice be retained. Shipping the audio without this would breach them.
+      credit: spec.credit || '',
       ...(spec.default ? { default: true } : {}),
     });
     published++;

@@ -484,7 +484,9 @@ function renderSettings() {
   host.append(
     group('Library',
       row('Bookmarks', `${state.bookmarks.length} saved`, el('span', { class: 'val', text: 'View' }), openBookmarks),
-      row('Offline listening', offlineDone ? 'This translation is saved on your device' : 'Save the whole Bible for flights and dead zones',
+      row('Offline listening', offlineDone
+        ? 'The text is on your device. Recorded narration still needs a connection.'
+        : 'Save the text for flights and dead zones. Recorded narration still needs a connection.',
         el('span', { class: 'val', text: offlineDone ? 'Saved' : 'Download' }), startDownload),
       row('Daily verse', reminderSummary(), el('span', { class: 'val', text: state.reminder.enabled ? 'On' : 'Off' }), openReminderSheet),
       row('Appearance', 'Dark suits late-night listening', el('span', { class: 'val', text: state.theme === 'dark' ? 'Dark' : 'Light' }), () => {
@@ -505,8 +507,13 @@ function renderSettings() {
   host.append(
     group('About',
       row('Everything is free', 'No subscription, no account, no locked chapters. Ads and gifts pay for it.', el('span', { class: 'val', text: 'Always' })),
-      row('Texts', 'King James Version (1611) and the Bible in Basic English — both public domain', el('span', { class: 'val', text: 'PD' })),
+      row('Texts', 'King James Version (1611), the Bible in Basic English, and Reina-Valera (1909) — all public domain', el('span', { class: 'val', text: 'PD' })),
       row('Speech', speech.supported ? 'Read aloud by your device, so it works offline' : 'This browser cannot speak text aloud', el('span', { class: 'val', text: speech.supported ? 'Ready' : 'Unavailable' })),
+      // Not decoration: several of the narrators are licensed CC BY, which
+      // obliges attribution, and one is Apache 2.0, which obliges the notice
+      // be kept. Shipping the audio without this screen would breach them.
+      row('Voice credits', 'Who recorded the narration, and under what licence',
+        el('span', { class: 'val', text: 'View' }), openCreditsSheet),
       row('Reset app', 'Clears progress, bookmarks and listening history', el('span', { class: 'val', text: 'Reset' }), () => {
         openSheet('Reset everything?', 'Your position, streak, bookmarks and history will be erased.', sheet => {
           sheet.append(
@@ -713,6 +720,54 @@ function openVoiceSheet() {
       sheet.append(el('p', { class: 'muted', style: 'margin-top:14px',
         text: 'Only basic system voices were found. For a much more natural reading, try opening Lantern in Microsoft Edge, which offers Microsoft “Natural” voices, or install additional voices in your system speech settings.' }));
     }
+  });
+}
+
+/**
+ * Who recorded each narrator, and under what terms.
+ *
+ * This exists to satisfy licences, not to fill a screen: the LibriTTS voices
+ * are CC BY 4.0 and the Sharvard voices CC BY 3.0, both of which require
+ * attribution wherever the work is distributed, and one Spanish voice is
+ * Apache 2.0, which requires the notice be retained. Voices that carry no
+ * obligation are listed anyway — the people who recorded and trained them
+ * earned the credit.
+ */
+function openCreditsSheet() {
+  const groups = [];
+  for (const id of Object.keys(lib.TRANSLATIONS)) {
+    const voices = narration.voicesFor(id);
+    if (voices.length) groups.push([lib.TRANSLATIONS[id].name, voices]);
+  }
+
+  openSheet('Voice credits', 'Narration is generated with Piper from openly licensed voices.', sheet => {
+    if (!groups.length) {
+      sheet.append(el('p', { class: 'muted', text: 'No recorded narration is available on this device yet.' }));
+      return;
+    }
+    for (const [name, voices] of groups) {
+      sheet.append(el('p', { class: 'genre-head', style: 'margin-top:16px', text: name }));
+      const list = el('div', { class: 'opt-list' });
+      // De-duplicated: eight narrators share one corpus, and repeating its
+      // credit eight times would bury the other attributions.
+      const seen = new Set();
+      for (const v of voices) {
+        const credit = v.credit || v.licence || '';
+        const key = credit;
+        const names = voices.filter(o => (o.credit || o.licence || '') === key).map(o => o.name);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        list.append(
+          el('div', { class: 'opt', style: 'cursor:default' },
+            el('span', {},
+              el('b', { text: names.join(', ') }),
+              el('small', { text: credit })))
+        );
+      }
+      sheet.append(list);
+    }
+    sheet.append(el('p', { class: 'muted', style: 'margin-top:16px',
+      text: 'Speech synthesis by Piper (MIT). Scripture text is public domain.' }));
   });
 }
 

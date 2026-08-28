@@ -99,6 +99,25 @@ if (PLATFORM !== 'web') {
   fs.writeFileSync(monetizePath, monetize);
 }
 
+// 2b. Choose the ad mode explicitly, and verify it took.
+//
+//     Getting this wrong is silent in both directions: test ads in the store
+//     build earn nothing, and live ads in a build the developer taps are an
+//     AdMob policy problem. So it is never inferred - the build says which
+//     mode it produced, and refuses if the rewrite did not apply.
+const ADS_LIVE = process.env.LANTERN_ADS === 'live';
+const admobPath = path.join(OUT, 'js', 'ads-admob.js');
+let admob = fs.readFileSync(admobPath, 'utf8');
+const testAnchor = /const TESTING = true;/;
+if (!testAnchor.test(admob)) throw new Error('TESTING anchor not found in ads-admob.js');
+if (ADS_LIVE) {
+  admob = admob.replace(testAnchor, 'const TESTING = false;');
+  fs.writeFileSync(admobPath, admob);
+  if (!/const TESTING = false;/.test(fs.readFileSync(admobPath, 'utf8'))) {
+    throw new Error('ad mode did not take');
+  }
+}
+
 // 3. Drop the web manifest link — irrelevant inside a native shell.
 const htmlPath = path.join(OUT, 'index.html');
 let html = fs.readFileSync(htmlPath, 'utf8');
@@ -125,6 +144,7 @@ console.log(`${OUT}/ built for ${PLATFORM}`);
 console.log(`  ${(bytes / 1048576).toFixed(1)} MB`);
 console.log(`  PLATFORM_TARGET = '${PLATFORM}'  ->  donations ${railIsIap ? 'hidden (IAP rail)' : 'shown'}`);
 console.log(`  service worker / manifest: excluded`);
+console.log(`  ads: ${ADS_LIVE ? 'LIVE — real inventory, do not tap them yourself' : 'TEST — placeholder ads, earns nothing'}`);
 
 if (railIsIap && stripeLinks.length) {
   console.log(`  NOTE: ${stripeLinks.length} Stripe URLs remain in source but are unreachable —`);

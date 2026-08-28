@@ -1,24 +1,126 @@
 {
   "_comment": "Every narrator Lantern can read with. `model` and `speaker` drive build-narration.js; the rest is what the listener sees. Licences are checked before a voice is added: the app carries ads, so anything non-commercial (CC BY-NC) or ShareAlike is refused no matter how good it sounds. `default` marks the narrator whose manifests ship inside the app and who covers any chapter another narrator has not reached yet.",
-
   "kjv": {
-    "cori":   { "name": "Cori",   "origin": "British English",  "licence": "Public domain", "model": "cori",      "default": true, "legacyNames": true },
-    "linda":  { "name": "Linda",  "origin": "American English", "licence": "Public domain", "model": "ljspeech" },
-    "abel":   { "name": "Abel",   "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 605 },
-    "reuben": { "name": "Reuben", "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 297 },
-    "silas":  { "name": "Silas",  "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 561 },
-    "jonah":  { "name": "Jonah",  "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 363 },
-    "hannah": { "name": "Hannah", "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 44 },
-    "miriam": { "name": "Miriam", "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 77 },
-    "naomi":  { "name": "Naomi",  "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 143 },
-    "esther": { "name": "Esther", "origin": "American English", "licence": "CC BY 4.0",     "model": "librittsh", "speaker": 737 }
+    "cori": {
+      "name": "Cori",
+      "origin": "British English",
+      "licence": "Public domain",
+      "model": "cori",
+      "default": true,
+      "legacyNames": true,
+      "credit": "LibriVox recordings (public domain), model by Bryce Beattie"
+    },
+    "linda": {
+      "name": "Linda",
+      "origin": "American English",
+      "licence": "Public domain",
+      "model": "ljspeech",
+      "credit": "LJ Speech Dataset by Keith Ito (public domain), model by Bryce Beattie"
+    },
+    "abel": {
+      "name": "Abel",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 605,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "reuben": {
+      "name": "Reuben",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 297,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "silas": {
+      "name": "Silas",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 561,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "jonah": {
+      "name": "Jonah",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 363,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "hannah": {
+      "name": "Hannah",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 44,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "miriam": {
+      "name": "Miriam",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 77,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "naomi": {
+      "name": "Naomi",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 143,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "esther": {
+      "name": "Esther",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 737,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    }
   },
-
   "rvr": {
-    "davefx":  { "name": "Davefx",  "origin": "Espana", "licence": "CC0",        "model": "davefx", "default": true, "legacyNames": true },
-    "mateo":   { "name": "Mateo",   "origin": "Mexico", "licence": "Apache 2.0", "model": "esclaude" },
-    "alonso":  { "name": "Alonso",  "origin": "Mexico", "licence": "Unlicense",  "model": "esald" },
-    "pilar":   { "name": "Pilar",   "origin": "Espana", "licence": "CC BY 3.0",  "model": "essharvard", "speaker": 0 },
-    "rodrigo": { "name": "Rodrigo", "origin": "Espana", "licence": "CC BY 3.0",  "model": "essharvard", "speaker": 1 }
+    "davefx": {
+      "name": "Davefx",
+      "origin": "Espana",
+      "licence": "CC0",
+      "model": "davefx",
+      "default": true,
+      "legacyNames": true,
+      "credit": "OHF Voice datasets (CC0)"
+    },
+    "mateo": {
+      "name": "Mateo",
+      "origin": "Mexico",
+      "licence": "Apache 2.0",
+      "model": "esclaude",
+      "credit": "HirCoir Piper-TTS-Spanish (Apache 2.0)"
+    },
+    "alonso": {
+      "name": "Alonso",
+      "origin": "Mexico",
+      "licence": "Unlicense",
+      "model": "esald",
+      "credit": "ald voice (Unlicense)"
+    },
+    "pilar": {
+      "name": "Pilar",
+      "origin": "Espana",
+      "licence": "CC BY 3.0",
+      "model": "essharvard",
+      "speaker": 0,
+      "credit": "Sharvard corpus, University of Edinburgh (CC BY 3.0)"
+    },
+    "rodrigo": {
+      "name": "Rodrigo",
+      "origin": "Espana",
+      "licence": "CC BY 3.0",
+      "model": "essharvard",
+      "speaker": 1,
+      "credit": "Sharvard corpus, University of Edinburgh (CC BY 3.0)"
+    }
   }
 }

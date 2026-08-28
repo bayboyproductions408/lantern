@@ -9,6 +9,12 @@ on:
         description: 'Marketing version (e.g. 1.0)'
         required: false
         default: '1.0'
+      ads:
+        description: 'Ad mode — test earns nothing, live serves real inventory'
+        required: false
+        default: 'test'
+        type: choice
+        options: [test, live]
 
 jobs:
   build:
@@ -37,6 +43,16 @@ jobs:
       # to IAP (hiding the Give tab) and strips the Stripe URLs from the bundle.
       - name: Build web assets for iOS
         run: node build-www.js ios
+        env:
+          LANTERN_ADS: ${{ inputs.ads }}
+
+      - name: Fail if the ad mode did not take
+        run: |
+          if [ "${{ inputs.ads }}" = "live" ] && grep -q "const TESTING = true;" www/js/ads-admob.js; then
+            echo "::error::Live ads were requested but the bundle still has test mode on."
+            exit 1
+          fi
+          echo "ad mode: ${{ inputs.ads }}"
 
       - name: Fail if any external payment link reached the bundle
         run: |
