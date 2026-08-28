@@ -1257,5 +1257,12 @@ export function bind() {
 
   player.on('change', renderNow);
   player.on('state', renderNow);
+
+  // Narrators that finished recording after this version shipped arrive a
+  // moment after launch, so anything already drawn has to catch up.
+  narration.onCatalogueChange(() => {
+    renderNow();
+    if (currentView === 'settings') renderSettings();
+  });
   player.on('error', err => toast(err.message));
 }

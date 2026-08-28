@@ -39,9 +39,50 @@ export function loadCatalogue() {
   if (cataloguePromise) return cataloguePromise;
   cataloguePromise = fetch('data/narration/catalogue.json')
     .then(r => (r.ok ? r.json() : null))
-    .then(j => { catalogue = j; return j; })
-    .catch(() => { catalogue = null; return null; });
+    .then(j => { catalogue = j; refresh(); return j; })
+    .catch(() => { catalogue = null; refresh(); return null; });
   return cataloguePromise;
+}
+
+// Listeners are told when the narrator list grows, so a screen already on
+// display can redraw rather than showing yesterday's choices.
+const watchers = new Set();
+export function onCatalogueChange(fn) {
+  watchers.add(fn);
+  return () => watchers.delete(fn);
+}
+
+/**
+ * Picks up narrators that finished recording after this version shipped.
+ *
+ * The bundled copy is used immediately — it is instant and works offline — and
+ * a fresher copy is then fetched from GitHub Pages in the background. Without
+ * this, every new narrator would need its own App Store release, which is
+ * thirteen reviews to deliver thirteen voices whose audio is already hosted.
+ * Failure is silent by design: no network simply means the narrators this
+ * version shipped with.
+ */
+function refresh() {
+  fetch(`${PAGES}/catalogue.json`, { cache: 'no-cache' })
+    .then(r => (r.ok ? r.json() : null))
+    .then(fresh => {
+      if (!fresh) return;
+      const before = JSON.stringify(catalogue);
+      // Only ever adopt a catalogue that is at least as complete as the bundled
+      // one. A truncated or half-published file must not remove a narrator the
+      // listener is part way through a book with — and "at least as complete"
+      // has to be measured against what shipped, not against what arrived, or a
+      // file missing a translation entirely counts as no regression at all.
+      const grew = Object.keys(catalogue ?? {}).every(tr =>
+        (fresh[tr]?.voices?.length ?? 0) >= (catalogue[tr]?.voices?.length ?? 0));
+      if (!grew) { note('remote catalogue smaller than bundled — ignored'); return; }
+      catalogue = fresh;
+      if (JSON.stringify(catalogue) !== before) {
+        note('catalogue refreshed from Pages');
+        watchers.forEach(fn => { try { fn(); } catch { /* a listener must not break the rest */ } });
+      }
+    })
+    .catch(() => { /* offline: the bundled catalogue stands */ });
 }
 
 /** True when this exact chapter has a recording. Synchronous by design: the
