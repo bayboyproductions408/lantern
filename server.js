@@ -6,7 +6,11 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = Number(process.env.PORT) || 4321;
-const ROOT = __dirname;
+// Normally the repo root. Pointed at www/ when capturing App Store
+// screenshots, so the frames show the bundle that actually ships - the store
+// build hides the Give tab, and a screenshot of a tab the app does not have
+// is a review finding.
+const ROOT = process.env.ROOT ? path.resolve(process.env.ROOT) : __dirname;
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
