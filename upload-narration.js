@@ -188,6 +188,15 @@ function homeOf(book, releases) {
   return releases.find(r => book.files.every(f => r.assets.get(f.name) === f.size)) || null;
 }
 
+/** Records which release holds each book. Merged with what is already on
+ *  disk so a partial run never drops another run's mapping. */
+function saveAssignment(assignment) {
+  const p = path.join(SRC, 'releases.json');
+  let existing = {};
+  try { existing = JSON.parse(fs.readFileSync(p, 'utf8')); } catch { /* first run */ }
+  fs.writeFileSync(p, JSON.stringify({ ...existing, ...assignment }, null, 2));
+}
+
 (async () => {
   const releases = await loadReleases();
   for (const r of releases) console.log(`${r.tag}: ${r.assets.size} assets`);
@@ -229,12 +238,16 @@ function homeOf(book, releases) {
       uploaded++; bytes += data.length;
     }
     assignment[book.key] = target.tag;
+    // Written after every book, not once at the end. A whole-Bible upload runs
+    // for hours; recording it only on a clean finish means an interruption
+    // loses the mapping for work that is already hosted, and means a narrator
+    // that finished uploading cannot be published until every other narrator
+    // does too.
+    saveAssignment(assignment);
     console.log(`  ${book.key.padEnd(22)} -> ${target.tag}  (${target.assets.size} assets)`);
   }
 
-  // The app needs to know which release holds each book; this is folded into
-  // the per-book manifests by build-narration-index.js.
-  fs.writeFileSync(path.join(SRC, 'releases.json'), JSON.stringify(assignment, null, 2));
+  saveAssignment(assignment);
 
   console.log(`\nalready hosted: ${skipped} books`);
   console.log(`uploaded ${uploaded} files, ${(bytes / 1048576).toFixed(1)} MB`);
