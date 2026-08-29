@@ -5,7 +5,8 @@
   "description": "Lantern - the Bible, read aloud",
   "scripts": {
     "build:www": "node build-www.js",
-    "sync:ios": "node build-www.js && npx cap sync ios"
+    "sync:ios": "node build-www.js && npx cap sync ios",
+    "android:release": "node scripts/android-release.js"
   },
   "dependencies": {
     "@capacitor-community/admob": "^8.1.0",

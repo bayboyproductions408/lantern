@@ -8,17 +8,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <!--
-            AdMob refuses to initialise without this and takes the app down with
-            it on launch, so an id has to be present even while ads are in test
-            mode. This is Google's published test application id; the real
-            Android one does not exist yet because the Android app has not been
-            created in the AdMob console. The release workflow fails a live-ads
-            build that still carries this value, so it cannot reach Play by
-            accident.
+            AdMob refuses to initialise without this and takes the app down
+            with it on launch, so it has to be present even while ads are in
+            test mode. Not a secret: an application id ships inside every app
+            that serves ads.
         -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"
+            android:value="ca-app-pub-9072066961806430~2640666239"
         />
 
         <activity

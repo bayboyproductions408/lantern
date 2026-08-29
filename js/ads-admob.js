@@ -29,7 +29,8 @@ const EVENT_FAILED = 'bannerAdFailedToLoad';
 // own device during development — or worse, tapping one — is how AdMob
 // accounts get suspended.
 //
-// Replace with the real unit from the AdMob console and set TESTING to false.
+// Both real units now exist; which table is used is decided at build time by
+// build-www.js, from the ad mode chosen when the release workflow is run.
 const TEST_BANNER = {
   ios: 'ca-app-pub-3940256099942544/2934735716',
   android: 'ca-app-pub-3940256099942544/6300978111',
@@ -37,13 +38,14 @@ const TEST_BANNER = {
 
 const LIVE_BANNER = {
   ios: 'ca-app-pub-9072066961806430/4272820839',
-  android: '',    // created when the Play build is registered
+  android: 'ca-app-pub-9072066961806430/4167651690',
 };
 
-// Test mode stays on for TestFlight. Real ads served to your own device — and
-// especially a tap on one — is invalid traffic, and it is the usual way AdMob
-// accounts get suspended. This flips to false in the build that goes to the
-// App Store, not before.
+// Test mode is the default, and stays on for TestFlight: real ads served to
+// your own device — especially a tap on one — is invalid traffic, and the usual
+// way AdMob accounts get suspended. build-www.js rewrites this to false when a
+// release is built with LANTERN_ADS=live, and CI fails a live build where the
+// rewrite did not take, so neither mode can ship by accident.
 const TESTING = true;
 
 // Non-personalised ads. This is a deliberate default, not an oversight: it
