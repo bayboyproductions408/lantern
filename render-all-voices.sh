@@ -18,6 +18,14 @@ WORKERS="${WORKERS:-4}"
 export OMP_NUM_THREADS=1
 export ORT_INTRA_OP_NUM_THREADS=1
 
+# The render runs for days and died overnight when the machine slept. This
+# holds the system awake for exactly as long as rendering lasts - a
+# process-scoped request, not a change to the machine's power settings, so
+# there is nothing to restore afterwards.
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File keep-awake.ps1 &
+AWAKE=$!
+trap 'kill $AWAKE 2>/dev/null' EXIT INT TERM
+
 for pair in "$@"; do
   tr="${pair%%:*}"; voice="${pair##*:}"
   echo "=============================================================="
