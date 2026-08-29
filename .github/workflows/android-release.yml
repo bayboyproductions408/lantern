@@ -1,0 +1,124 @@
+name: Android Release (Play)
+
+# Manual only, like the iOS workflow. Every run produces a signed bundle
+# intended for upload, so it should never fire on a plain push.
+on:
+  workflow_dispatch:
+    inputs:
+      versionName:
+        description: 'Version name (e.g. 1.0)'
+        required: false
+        default: '1.0'
+      versionCode:
+        description: 'Version code — must increase with every Play upload'
+        required: true
+        default: '1'
+      ads:
+        description: 'Ad mode — test earns nothing, live serves real inventory'
+        required: false
+        default: 'test'
+        type: choice
+        options: [test, live]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Capacitor 8 compiles against Java 21; 17 fails with
+      # "invalid source release: 21".
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - run: npm ci
+
+      - name: Build web assets
+        run: node build-www.js android
+        env:
+          LANTERN_ADS: ${{ inputs.ads }}
+
+      - name: Fail if the ad mode did not take
+        run: |
+          if [ "${{ inputs.ads }}" = "live" ] && grep -q "const TESTING = true;" www/js/ads-admob.js; then
+            echo "::error::Live ads were requested but the bundle still has test mode on."
+            exit 1
+          fi
+          echo "ad mode: ${{ inputs.ads }}"
+
+      # The manifest still carries Google's test application id because no
+      # Android app exists in AdMob yet. Shipping that to Play with live ads
+      # would serve test inventory forever and earn nothing, silently.
+      - name: Fail if live ads still use the AdMob test app id
+        run: |
+          if [ "${{ inputs.ads }}" = "live" ] &&              grep -q "ca-app-pub-3940256099942544~3347511713" android/app/src/main/AndroidManifest.xml; then
+            echo "::error::Live ads requested, but AndroidManifest.xml still has the AdMob TEST application id."
+            echo "Create the Android app in AdMob, then replace the APPLICATION_ID meta-data value."
+            exit 1
+          fi
+
+      - name: Fail if any external payment link reached the bundle
+        run: |
+          if grep -rq "buy\.stripe\.com" www/; then
+            echo "::error::A Stripe payment URL is present in the Android bundle."
+            grep -rn "buy\.stripe\.com" www/ | head
+            exit 1
+          fi
+
+      - run: npx cap sync android
+
+      - name: Apply version
+        run: |
+          sed -i "s/versionCode 1/versionCode ${{ inputs.versionCode }}/" android/app/build.gradle
+          sed -i "s/versionName \"1.0\"/versionName \"${{ inputs.versionName }}\"/" android/app/build.gradle
+          grep -nE "versionCode|versionName" android/app/build.gradle
+
+      # The keystore travels as a base64 secret and is written to a file the
+      # Gradle config picks up through ANDROID_KEYSTORE_PATH. It is removed
+      # again in the same job, and never reaches an artifact.
+      - name: Restore signing keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/lantern-upload.p12"
+          if [ ! -s "$RUNNER_TEMP/lantern-upload.p12" ]; then
+            echo "::error::ANDROID_KEYSTORE_BASE64 is missing or empty."
+            exit 1
+          fi
+
+      - name: Build signed bundle
+        run: ./gradlew bundleRelease --console=plain
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/lantern-upload.p12
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      # Play rejects an unsigned or debug-signed bundle, and an unsigned build
+      # otherwise succeeds quietly here and fails hours later on upload.
+      - name: Verify the bundle is signed
+        run: |
+          AAB=android/app/build/outputs/bundle/release/app-release.aab
+          if ! jarsigner -verify "$AAB" | grep -q "jar verified"; then
+            echo "::error::The bundle is not signed."
+            jarsigner -verify -verbose:summary "$AAB" | tail -20
+            exit 1
+          fi
+          echo "signed OK — $(du -h "$AAB" | cut -f1)"
+
+      - name: Remove the keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/lantern-upload.p12"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Lantern-aab-${{ inputs.versionCode }}
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 14

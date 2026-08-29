@@ -1,5 +1,24 @@
 apply plugin: 'com.android.application'
 
+// Release signing.
+//
+// Play refuses an unsigned or debug-signed bundle, so this has to exist - but
+// the keystore and its password must never be in the repository. Two sources,
+// in order: a keystore.properties outside the tree for local builds, and
+// environment variables for CI, where the keystore arrives base64-encoded in a
+// secret and is written to a temporary file by the workflow.
+//
+// If neither is present the release build is simply left unsigned rather than
+// failing, so anyone can still run a debug build of this project.
+def keystorePropsFile = rootProject.file('../../dev-tools/android-signing/lantern/keystore.properties')
+def keystoreProps = new Properties()
+if (keystorePropsFile.exists()) {
+    keystoreProps.load(new FileInputStream(keystorePropsFile))
+}
+
+def envStore = System.getenv('ANDROID_KEYSTORE_PATH')
+def signingReady = keystorePropsFile.exists() || (envStore != null && !envStore.isEmpty())
+
 android {
     namespace = "com.bayboyproductions.lantern"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -16,10 +35,26 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (envStore != null && !envStore.isEmpty()) {
+                storeFile file(envStore)
+                storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('ANDROID_KEY_ALIAS')
+                keyPassword System.getenv('ANDROID_KEY_PASSWORD')
+            } else if (keystorePropsFile.exists()) {
+                storeFile file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingReady ? signingConfigs.release : null
         }
     }
 }
