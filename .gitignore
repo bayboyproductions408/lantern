@@ -34,3 +34,6 @@ Thumbs.db
 android/app/build/
 android/.gradle/
 android/build/
+
+# Narration run logs — transient output of the render/upload scripts.
+*.log
