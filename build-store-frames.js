@@ -16,11 +16,16 @@ const http = require('http');
 const { spawn } = require('child_process');
 
 const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
-const SRC = 'store-assets/screenshots';
-const OUT = 'store-assets/frames';
+const SRC = process.env.SHOT_SRC || 'store-assets/screenshots';
+const OUT = process.env.FRAME_OUT || 'store-assets/frames';
 const PORT = 9334;
 
-const WIDTH = 440, HEIGHT = 956, SCALE = 3;
+// Overridable so the same pipeline can produce Play's phone frames. Apple
+// wants 1320x2868 (2.17:1); Google caps phone screenshots at 2:1, so the
+// Android set is rendered at 360x640 CSS - 1080x1920 - instead.
+const WIDTH = Number(process.env.SHOT_W || 440);
+const HEIGHT = Number(process.env.SHOT_H || 956);
+const SCALE = Number(process.env.SHOT_SCALE || 3);
 
 const FRAMES = [
   { src: '1-listening.png', head: 'The Bible, read aloud',      sub: 'Press play and listen from where you left off' },

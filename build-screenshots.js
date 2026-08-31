@@ -24,10 +24,15 @@ const { spawn } = require('child_process');
 
 const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const BASE = process.env.BASE || 'http://localhost:4321';
-const OUT = 'store-assets/screenshots';
+const OUT = process.env.SHOT_OUT || 'store-assets/screenshots';
 const PORT = 9333;
 
-const WIDTH = 440, HEIGHT = 956, SCALE = 3;   // -> 1320 x 2868
+// Overridable so the same pipeline can produce Play's phone frames. Apple
+// wants 1320x2868 (2.17:1); Google caps phone screenshots at 2:1, so the
+// Android set is rendered at 360x640 CSS - 1080x1920 - instead.
+const WIDTH = Number(process.env.SHOT_W || 440);
+const HEIGHT = Number(process.env.SHOT_H || 956);
+const SCALE = Number(process.env.SHOT_SCALE || 3);   // -> 1320 x 2868
 const STATE_KEY = 'lantern.state.v1';
 
 // A plausible history, so the counters read like an app in use rather than
@@ -178,5 +183,5 @@ const evaluate = (cdp, expression) =>
       `${(b.length / 1024).toFixed(0)} KB`);
   }
   if (bad) { console.error(`\n${bad} screenshot(s) unusable`); process.exit(1); }
-  console.log('\nAll frames 1320x2868, RGB with no alpha.');
+  console.log(`\nAll frames ${WIDTH * SCALE}x${HEIGHT * SCALE}, RGB with no alpha.`);
 })().catch(err => { console.error(err.message); process.exit(1); });
