@@ -54,9 +54,10 @@ jobs:
           fi
           echo "ad mode: ${{ inputs.ads }}"
 
-      # The manifest still carries Google's test application id because no
-      # Android app exists in AdMob yet. Shipping that to Play with live ads
-      # would serve test inventory forever and earn nothing, silently.
+      # The real Android application id is in the manifest now. This stays as a
+      # guard rather than a to-do: if the test id is ever pasted back while
+      # debugging, a live build fails here instead of shipping to Play and
+      # serving test inventory forever, silently earning nothing.
       - name: Fail if live ads still use the AdMob test app id
         run: |
           if [ "${{ inputs.ads }}" = "live" ] &&              grep -q "ca-app-pub-3940256099942544~3347511713" android/app/src/main/AndroidManifest.xml; then

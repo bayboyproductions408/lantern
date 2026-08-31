@@ -85,7 +85,7 @@
   "rvr": {
     "davefx": {
       "name": "Davefx",
-      "origin": "Espana",
+      "origin": "España",
       "licence": "CC0",
       "model": "davefx",
       "default": true,
@@ -94,21 +94,21 @@
     },
     "mateo": {
       "name": "Mateo",
-      "origin": "Mexico",
+      "origin": "México",
       "licence": "Apache 2.0",
       "model": "esclaude",
       "credit": "HirCoir Piper-TTS-Spanish (Apache 2.0)"
     },
     "alonso": {
       "name": "Alonso",
-      "origin": "Mexico",
+      "origin": "México",
       "licence": "Unlicense",
       "model": "esald",
       "credit": "ald voice (Unlicense)"
     },
     "pilar": {
       "name": "Pilar",
-      "origin": "Espana",
+      "origin": "España",
       "licence": "CC BY 3.0",
       "model": "essharvard",
       "speaker": 0,
@@ -116,7 +116,7 @@
     },
     "rodrigo": {
       "name": "Rodrigo",
-      "origin": "Espana",
+      "origin": "España",
       "licence": "CC BY 3.0",
       "model": "essharvard",
       "speaker": 1,
