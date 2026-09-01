@@ -6,7 +6,8 @@
   "scripts": {
     "build:www": "node build-www.js",
     "sync:ios": "node build-www.js && npx cap sync ios",
-    "android:release": "node scripts/android-release.js"
+    "android:release": "node scripts/android-release.js",
+    "narration:publish": "node scripts/publish-narration.js"
   },
   "dependencies": {
     "@capacitor-community/admob": "^8.1.0",

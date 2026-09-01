@@ -41,10 +41,11 @@ No account. No subscription. No paywall. Nobody should have to pay to hear the
 Bible.
 
 PEOPLE, NOT ROBOTS
-Every chapter is narrated, not read out by a robotic text-to-speech voice. Pick
-whichever narrator you would rather listen to, and Lantern remembers your
-choice. More narrators are added over time and appear on their own — you do not
-need to update the app to hear them.
+The King James Version and Reina-Valera are read by recorded narrators, every
+chapter, rather than by a robotic text-to-speech voice. Pick whichever narrator
+you would rather listen to, and Lantern remembers your choice. More narrators
+are added over time and appear on their own — you do not need to update the app
+to hear them.
 
 PICK UP WHERE YOU LEFT OFF
 Lantern remembers your place automatically. Close it mid-verse, come back days
@@ -56,7 +57,7 @@ unlock, and no chapter held back.
 
 THREE TRANSLATIONS
 - King James Version
-- Bible in Basic English — plain, simple wording
+- Bible in Basic English — plain, simple wording, read by your device's voice
 - Reina-Valera (1909) — in Spanish, read by a Spanish narrator
 
 Switch translation mid-chapter and Lantern keeps your exact place.
