@@ -148,10 +148,21 @@ genuinely on screen and in the foreground, with house creatives as the no-fill
 fallback. There is also an opt-in rewarded video and a tip jar — neither unlocks
 anything, because there is nothing locked.
 
-No ad network is connected yet (`ACTIVE_NETWORK = 'house'`) and gifts are
-simulated. See [MONETIZATION.md](MONETIZATION.md) for the revenue model, the
-placement rules that keep ads from angering people, and why direct-sold
-sponsorship is worth six to ten times programmatic.
+Those placements are the **web** build's, and no network is connected to them
+yet (`ACTIVE_NETWORK = 'house'` in `js/monetize.js`); gifts there are simulated.
+The **native** builds are different: `js/ads-admob.js` runs a real AdMob banner
+through the Google Mobile Ads SDK, requested non-personalised (`npa=1`) so no
+advertising identifier is used for tracking and no App Tracking Transparency
+prompt is needed.
+
+`TESTING` in `js/ads-admob.js` decides whether that banner earns anything, and
+the ad mode is a release-time input rather than a source constant. See
+[RELEASE-CHECKLIST.md](RELEASE-CHECKLIST.md) §4 before shipping — a build sent
+out with test units looks perfectly healthy and earns nothing.
+
+See [MONETIZATION.md](MONETIZATION.md) for the revenue model, the placement rules
+that keep ads from angering people, and why direct-sold sponsorship is worth six
+to ten times programmatic.
 
 ---
 
