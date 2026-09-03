@@ -39,3 +39,4 @@ android/build/
 *.log
 upload.out
 upload.err
+supervisor-heartbeat.txt

@@ -53,8 +53,18 @@ if (-not $mutex.WaitOne(0)) {
 
 Note "supervisor started (pid $mine), checking every ${intervalSeconds}s"
 
+# A heartbeat, so "is the supervisor alive?" has an answer that cannot be faked.
+# Looking for a powershell process whose command line mentions this script is
+# useless: any shell that merely has the path typed into it matches, so both the
+# supervisor's own guard and every later check reported a supervisor that was
+# not there. The render sat dead for three and a half hours behind one of those
+# false positives. A timestamp this process writes itself cannot lie - if
+# heartbeat.txt is older than a few minutes, the supervisor is gone.
+$beat = Join-Path $repo 'supervisor-heartbeat.txt'
+
 $restarts = 0
 while ($true) {
+  Set-Content -Path $beat -Value (Get-Date -Format 'o') -Encoding utf8
   if (-not (QueueRunning)) {
     $restarts++
     Note "queue not running - restart #$restarts"
