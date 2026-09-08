@@ -1,5 +1,6 @@
 import UIKit
 import Capacitor
+import AVFoundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -7,8 +8,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        configureAudioSession()
         return true
+    }
+
+    /// Lets narration keep playing when the screen locks or the app is
+    /// backgrounded.
+    ///
+    /// This is half of a pair. UIBackgroundModes=audio in Info.plist buys the
+    /// right to run in the background; the session category is what actually
+    /// keeps audio alive once there. Either alone does nothing, which is why
+    /// the bug was easy to miss - build 16 had neither, and a comment in
+    /// js/narration.js claimed the playsinline attribute covered it. It does
+    /// not: playsinline only stops video taking over the screen.
+    ///
+    /// .spokenAudio is the mode for narration rather than music. It makes the
+    /// system treat this as an audiobook, following the Spoken Audio routing
+    /// and ducking rules instead of the music ones.
+    ///
+    /// The category is set but the session is deliberately NOT activated here.
+    /// Activating claims the audio route straight away, which would cut off
+    /// whatever the listener was already playing just because they opened the
+    /// app. iOS activates it by itself when playback actually starts.
+    private func configureAudioSession() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
+        } catch {
+            // Non-fatal: foreground playback still works, so a failure here
+            // must never stop the app from launching.
+            print("Lantern: could not set audio session category - \(error)")
+        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

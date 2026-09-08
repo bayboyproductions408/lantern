@@ -24,6 +24,19 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<!-- The whole point of the app is listening with the screen off: the sleep
+	     timer exists so you can fall asleep to it, and the store listing says so.
+	     Without this key iOS suspends the app the moment the screen locks and the
+	     narration stops, which is how build 16 shipped. playsinline does NOT do
+	     this - it only stops video going fullscreen. Background audio needs the
+	     entitlement here AND an AVAudioSession category of .playback, which
+	     AppDelegate sets. Both, or neither works.
+	     Apple rejects apps that declare this mode without genuinely playing audio
+	     in the background (2.5.4); this one does, so the declaration is honest. -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

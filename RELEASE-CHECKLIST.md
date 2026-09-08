@@ -31,6 +31,15 @@ rather than skipping.
       Apple lets each `.p8` be downloaded exactly once, and overwriting the
       secret destroys your only copy of the old one.
 
+- [ ] **On a real device, press play and lock the screen.** Audio must keep
+      going, and the lock screen must show the title with working controls. This
+      is the app's whole purpose and the sleep timer depends on it, yet it cannot
+      be tested on Windows, in a simulator, or in the browser - only on hardware.
+      Build 16 shipped with it broken because nothing in this list asked.
+      It needs `UIBackgroundModes=audio` in `Info.plist` AND an `AVAudioSession`
+      category of `.playback` in `AppDelegate`. Either one alone silently does
+      nothing. `playsinline` is unrelated - it only stops video going fullscreen.
+
 ## 3. Google Play
 
     npm run android:release -- --live

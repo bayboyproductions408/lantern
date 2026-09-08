@@ -488,7 +488,18 @@ function renderSettings() {
         ? 'The text is on your device. Recorded narration still needs a connection.'
         : 'Save the text for flights and dead zones. Recorded narration still needs a connection.',
         el('span', { class: 'val', text: offlineDone ? 'Saved' : 'Download' }), startDownload),
-      row('Daily verse', reminderSummary(), el('span', { class: 'val', text: state.reminder.enabled ? 'On' : 'Off' }), openReminderSheet),
+      // Only where notifications actually exist. iOS has no Notification API
+      // inside a WKWebView, so on the native build this row rendered as a dead
+      // control reading "This browser cannot show notifications", and its sheet
+      // described Lantern as "only a website". A setting that cannot do anything
+      // is worse than an absent one, and telling an App Store reviewer the app is
+      // a website is an argument for rejecting it as a web wrapper. The feature
+      // is not advertised anywhere in the store listing, so nothing is promised
+      // and then withheld. Wrapping @capacitor/local-notifications would make it
+      // real on iOS; until then it belongs only on the web.
+      ...(notify.supported()
+        ? [row('Daily verse', reminderSummary(), el('span', { class: 'val', text: state.reminder.enabled ? 'On' : 'Off' }), openReminderSheet)]
+        : []),
       row('Appearance', 'Dark suits late-night listening', el('span', { class: 'val', text: state.theme === 'dark' ? 'Dark' : 'Light' }), () => {
         store.set({ theme: state.theme === 'dark' ? 'light' : 'dark' });
         applyTheme();

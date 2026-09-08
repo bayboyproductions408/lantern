@@ -165,7 +165,11 @@ function audio() {
   if (el) return el;
   el = new Audio();
   el.preload = 'auto';
-  // Scripture is speech; this keeps it playing when the screen locks.
+  // Stops iOS handing playback to its fullscreen media player. It does NOT keep
+  // audio going when the screen locks - the comment here used to say it did, and
+  // that claim is why build 16 shipped with background playback broken. Only two
+  // things buy that: UIBackgroundModes=audio in Info.plist and an AVAudioSession
+  // category of .playback, both set on the native side.
   el.setAttribute('playsinline', '');
   return el;
 }

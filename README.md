@@ -226,6 +226,10 @@ Checked in-browser against a running server:
 - **Icons are SVG-only.** Some Android install prompts want a 192px and 512px
   PNG. Needs generating before store submission.
 - **Background audio on mobile web is unreliable** — screen-lock behaviour varies
-  by browser. This is the strongest argument for wrapping the app with Capacitor
-  for the app stores rather than shipping PWA-only. AdMob also pays materially
-  better than AdSense on mobile inventory.
+  by browser, and a web page cannot ask for more. This was the strongest argument
+  for wrapping the app with Capacitor rather than shipping PWA-only. **The native
+  builds no longer have this gap**: `UIBackgroundModes=audio` plus an
+  `AVAudioSession` category of `.playback`/`.spokenAudio` keeps narration running
+  with the screen locked. Both are required — either alone does nothing, and
+  build 16 shipped with neither, so the sleep timer could not do the one thing it
+  is for. AdMob also pays materially better than AdSense on mobile inventory.
