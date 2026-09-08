@@ -34,7 +34,13 @@ const FRAMES = [
   // it reads "Google UK English Female" - a voice no iPhone has. Cropping is
   // honest; naming an Apple voice the capture never produced would not be.
   { src: '2-voices.png',    head: 'People, not robots',          sub: 'Real recorded narrators — pick who reads to you', cropBottom: 320 },
-  { src: '3-library.png',   head: 'All 66 books',                sub: 'Every chapter, free, with nothing locked away' },
+  // No price language here, and none in any other caption. Apple rejected the
+  // 2026-09-02 submission under 2.3.7 for exactly this line, which used to read
+  // "Every chapter, free, with nothing locked away". Screenshots are metadata,
+  // and Apple counts "free" as a price reference just as much as a number -
+  // "references to free or discounted services are considered a price
+  // reference". The app description is the one place price may be discussed.
+  { src: '3-library.png',   head: 'All 66 books',                sub: 'Genesis to Revelation, ready when you are' },
   { src: '4-plans.png',     head: 'Read the whole Bible',        sub: 'Paced plans, about 14 minutes of listening a day' },
   { src: '5-spanish.png',   head: 'También en español',          sub: 'Reina-Valera, leída por un narrador de verdad' },
 ];

@@ -34,12 +34,18 @@ kjv,king james,verse,devotional,reading plan,spanish,reina valera,christian,audi
 
 No spaces after commas: a space costs a character and buys nothing.
 
-## Promotional Text (170 max — 124 used)
+## Promotional Text (170 max — 117 used)
 
 Editable any time without submitting a new build, so use it for seasonal notes.
 
+**No price language.** Promotional text is metadata, and guideline 2.3.7 treats
+"free" as a price reference. This field used to open "Free forever" and end
+"no paywall"; the screenshots were rejected for the same thing on 2026-09-04,
+and this field would have been next. The description below may say it - Apple
+names the description as the place price belongs.
+
 ```
-Free forever. Press play and hear the Bible read aloud from wherever you left off - offline, with no account and no paywall.
+Press play and hear the Bible read aloud from wherever you left off - offline, with no account and nothing to set up.
 ```
 
 ## Description
@@ -204,11 +210,22 @@ are required.
 > Apple silently rejects screenshots carrying an alpha channel. Save as 24-bit
 > RGB PNG, or JPEG.
 
-Suggested five, in order — the first two are what most people actually see in
-search results, so they carry the pitch:
+> **Never put price language in a caption.** Screenshots are metadata, and
+> guideline 2.3.7 counts "free" as a price reference exactly like a number:
+> *"references to free or discounted services are considered a price reference."*
+> The 2026-09-02 submission was rejected on 2026-09-04 for one caption reading
+> "Every chapter, free, with nothing locked away". Say it in the description
+> instead - Apple names that as the place price belongs.
+
+The captions live in `FRAMES` in `build-store-frames.js`, which is what actually
+renders them. This list is only a description of that set:
 
 1. Listen view, mid-playback — "The Bible, read aloud"
-2. The free promise — "No account. No subscription. Ever."
-3. Library / book grid — "All 66 books, offline"
-4. Voice and tone settings — "A voice that is easy to listen to"
-5. Sleep timer — "Falls asleep when you do"
+2. Narrator picker — "People, not robots"
+3. Library / book grid — "All 66 books"
+4. Reading plans — "Read the whole Bible"
+5. Spanish — "También en español"
+
+An earlier draft of this list proposed a second shot built on the free promise
+("No account. No subscription. Ever."). It was never rendered, and it must not
+be: that is the rejection above, written down as a plan.
