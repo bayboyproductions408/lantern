@@ -123,17 +123,72 @@ Public domain scripture. App © 2026 Dominic Hecht.
 ## App Review notes
 
 ```
-Lantern is free with no account, no login, and no in-app purchases, so no demo
-credentials are required.
+Lantern reads the Bible aloud. It is free, with no account, no login, no
+subscription and no in-app purchases, so no demo credentials are needed.
 
-All scripture text ships inside the app bundle; the app is fully functional with
-no network connection. To review: launch the app and press the play button on
-the Listen tab — the reading begins immediately and continues across chapters.
+HOW TO REVIEW (about a minute)
+1. Launch the app. It opens on the Listen tab.
+2. Press the large play button. Recorded narration begins and continues on its
+   own, verse to verse and chapter to chapter.
+3. Lock the screen. Audio keeps playing, and the Lock Screen shows the passage
+   with working play/pause controls.
+4. The gear icon, top right, holds translation, narrator, speed, reading tone,
+   sleep timer and bookmarks.
 
-The app contains no payment functionality of any kind. Donations exist only on
-the separate website and are deliberately absent from this build.
+1. THIRD-PARTY ANALYTICS OR ADVERTISING
+Advertising only. There is no analytics SDK of any kind. One Google AdMob
+banner sits at the bottom of the screen, served through the Google Mobile Ads
+SDK. It is requested NON-PERSONALISED (npa=1), so the advertising identifier
+is never used for tracking. That is why the app shows no App Tracking
+Transparency prompt and why "Data Used to Track You" is declared as none.
+Google receives what the privacy labels list: coarse location, device
+identifiers, product interaction and advertising data, plus crash and
+performance data.
 
-All three included translations are in the public domain.
+2. DEVICES AND OS VERSIONS TESTED
+>>> REPLACE THIS LINE BEFORE SUBMITTING <<<
+
+3. CORE FUNCTIONALITY AND INTENDED AUDIENCE
+An audio Bible, for anyone who would rather listen than read: commuters,
+people with low vision, and people who listen while falling asleep. Three
+complete public-domain translations ship inside the app - King James Version,
+Bible in Basic English, and Reina-Valera 1909 (Spanish). Also included:
+full-text search across all 31,100 verses, eight reading plans, bookmarks, a
+sleep timer, adjustable speed and three reading tones.
+
+4. SETUP INSTRUCTIONS
+None. No account, no configuration, and no permission prompts at launch.
+
+5. EXTERNAL SERVICES USED
+Two, both read-only, neither needing an account:
+- Google AdMob, for the banner described above.
+- GitHub Pages and GitHub Releases, which host the recorded narration audio
+  and the list of available narrators. Audio streams from there on demand.
+  Nothing is ever uploaded.
+The scripture text itself is bundled, so the app is fully functional with no
+network. With no connection the recorded narration is unavailable and playback
+falls back to the iOS speech synthesiser, so it still reads aloud offline.
+
+6. REGIONAL OR LOCALE DIFFERENCES
+None in behaviour. The app is offered in English and Spanish; choosing the
+Reina-Valera translation switches the interface to Spanish. China mainland has
+been removed from availability, since book content there requires an Internet
+Publishing License that we do not hold.
+
+7. PROTECTED THIRD-PARTY MATERIAL
+None. Every text is public domain: the King James Version (1611), the Bible in
+Basic English (1965), and Reina-Valera 1909 - deliberately not the copyrighted
+1960 revision. The narration is generated with Piper from openly licensed voice
+models (public domain, CC0, CC BY 3.0 and 4.0, Apache 2.0, Unlicense). Each
+voice is credited with its licence inside the app, under Settings > Voice
+credits.
+
+WHAT CHANGED IN THIS BUILD
+Narration now keeps playing when the screen is locked, and the Lock Screen
+shows working controls. The previous build was missing the background audio
+entitlement, so playback stopped the moment the screen went off - which meant
+the sleep timer could not do the one thing it is for. Please do test step 3
+above.
 ```
 
 ---
