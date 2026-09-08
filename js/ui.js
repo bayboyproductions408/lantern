@@ -433,6 +433,17 @@ function row(label, sub, right, onclick) {
   );
 }
 
+/**
+ * True inside the iOS/Android wrappers, false on the web.
+ *
+ * Used to keep desktop-browser advice out of the native builds, where it is
+ * both wrong and damaging: telling an App Store reviewer to open Lantern in
+ * another browser invites rejection as a web wrapper.
+ */
+function isNative() {
+  return Boolean(window.Capacitor?.isNativePlatform?.());
+}
+
 function group(title, ...rows) {
   return el('div', { class: 'set-group' }, el('h3', { text: title }), ...rows);
 }
@@ -519,7 +530,7 @@ function renderSettings() {
     group('About',
       row('Everything is free', 'No subscription, no account, no locked chapters. Ads and gifts pay for it.', el('span', { class: 'val', text: 'Always' })),
       row('Texts', 'King James Version (1611), the Bible in Basic English, and Reina-Valera (1909) — all public domain', el('span', { class: 'val', text: 'PD' })),
-      row('Speech', speech.supported ? 'Read aloud by your device, so it works offline' : 'This browser cannot speak text aloud', el('span', { class: 'val', text: speech.supported ? 'Ready' : 'Unavailable' })),
+      row('Speech', speech.supported ? 'Read aloud by your device, so it works offline' : 'This device cannot speak text aloud', el('span', { class: 'val', text: speech.supported ? 'Ready' : 'Unavailable' })),
       // Not decoration: several of the narrators are licensed CC BY, which
       // obliges attribution, and one is Apache 2.0, which obliges the notice
       // be kept. Shipping the audio without this screen would breach them.
@@ -726,10 +737,23 @@ function openVoiceSheet() {
       sheet.append(el('p', { class: 'muted', style: 'margin-top:14px',
         text: 'Add one in your system speech settings, then reopen Lantern. Until then this translation cannot be read aloud.' }));
     } else if (speech.onlyBasicVoices(lang)) {
-      // Windows ships only basic voices to Chrome. Edge exposes Microsoft's
-      // "Natural" neural voices, which are a different class of quality.
+      // Advice has to match the platform the listener is actually on.
+      //
+      // The desktop line names Microsoft Edge, because on Windows that is the
+      // real answer: Chrome is given only the basic SAPI voices while Edge
+      // exposes Microsoft's "Natural" neural ones, a different class entirely.
+      //
+      // That sentence must never reach the native builds. On iOS it is wrong
+      // twice over - every iOS browser runs on WebKit and gets the same voices,
+      // so switching changes nothing - and it tells the reader that Lantern is a
+      // website they should open somewhere else. Shown to an App Store reviewer
+      // it is an argument for rejecting the app as a repackaged web page, and it
+      // is reachable: Apple's compact voices score as "standard", so a device
+      // carrying only one for the language being read lands here.
       sheet.append(el('p', { class: 'muted', style: 'margin-top:14px',
-        text: 'Only basic system voices were found. For a much more natural reading, try opening Lantern in Microsoft Edge, which offers Microsoft “Natural” voices, or install additional voices in your system speech settings.' }));
+        text: isNative()
+          ? 'Only basic system voices were found. For a much more natural reading, choose one of the recorded narrators above, or add a higher-quality voice in Settings › Accessibility › Spoken Content › Voices.'
+          : 'Only basic system voices were found. For a much more natural reading, try opening Lantern in Microsoft Edge, which offers Microsoft “Natural” voices, or install additional voices in your system speech settings.' }));
     }
   });
 }
