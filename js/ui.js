@@ -571,7 +571,12 @@ function renderSupportCard() {
 /* ── Sheets ───────────────────────────────────────────────────── */
 
 function openTranslationSheet() {
-  openSheet('Translation', 'Both texts are public domain, so they are bundled in full.', sheet => {
+  // No count in this sentence, deliberately. It read "Both texts" for months
+  // after the Reina-Valera made it three, so the sheet sat there contradicting
+  // the three rows listed directly beneath it. A number here has to be kept in
+  // step with lib.TRANSLATIONS by hand, and it will not be; a sentence that is
+  // true for any number of translations needs no maintenance.
+  openSheet('Translation', 'Every translation here is public domain, so they are bundled in full.', sheet => {
     const list = el('div', { class: 'opt-list' });
     for (const t of Object.values(lib.TRANSLATIONS)) {
       list.append(
