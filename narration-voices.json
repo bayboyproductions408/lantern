@@ -82,6 +82,40 @@
       "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
     }
   },
+  "bbe": {
+    "linda": {
+      "name": "Linda",
+      "origin": "American English",
+      "licence": "Public domain",
+      "model": "ljspeech",
+      "default": true,
+      "credit": "LJ Speech Dataset by Keith Ito (public domain), model by Bryce Beattie"
+    },
+    "hannah": {
+      "name": "Hannah",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 44,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "abel": {
+      "name": "Abel",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 605,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "miriam": {
+      "name": "Miriam",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 77,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    }
+  },
   "rvr": {
     "davefx": {
       "name": "Davefx",

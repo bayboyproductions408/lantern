@@ -46,9 +46,24 @@ if (-not $UploadOnly) {
     # The voice order is the render queue; finished voices are skipped in
     # seconds, so passing the whole list every time is the simplest way to
     # resume without tracking where it stopped.
+    # Bible in Basic English comes before the last two King James voices on
+    # purpose. KJV already has eight narrators published and BBE has none at
+    # all, so every BBE listener falls back to the device synthesiser - the
+    # robotic one this whole effort exists to replace. The ninth KJV voice is
+    # worth far less than the first BBE voice.
+    #
+    # BBE reuses the KJV narrator names deliberately: the app keys positions on
+    # a book slug, so someone who switches translation mid-chapter keeps both
+    # their place and the voice they chose.
+    #
+    # Only models whose .onnx.json sits next to the .onnx are listed. cori has
+    # no config on disk, so a "bbe:cori" here would fail on every cycle the way
+    # rvr:alonso silently did for six days - piper exits 1 with empty stderr.
     $voices = @(
       'kjv:abel','rvr:pilar','kjv:miriam','kjv:reuben','rvr:alonso',
-      'kjv:naomi','kjv:silas','rvr:rodrigo','kjv:esther','kjv:jonah'
+      'kjv:naomi','kjv:silas','rvr:rodrigo',
+      'bbe:linda','bbe:hannah','bbe:abel','bbe:miriam',
+      'kjv:esther','kjv:jonah'
     )
     # Node, not bash. The shell driver ran perfectly in the foreground and
     # silently did nothing when detached from PowerShell - a login shell's cd,
