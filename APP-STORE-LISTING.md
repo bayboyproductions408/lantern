@@ -34,7 +34,7 @@ kjv,king james,verse,devotional,reading plan,spanish,reina valera,christian,audi
 
 No spaces after commas: a space costs a character and buys nothing.
 
-## Promotional Text (170 max — 117 used)
+## Promotional Text (170 max — 135 used)
 
 Editable any time without submitting a new build, so use it for seasonal notes.
 
@@ -45,7 +45,7 @@ and this field would have been next. The description below may say it - Apple
 names the description as the place price belongs.
 
 ```
-Press play and hear the Bible read aloud from wherever you left off - offline, with no account and nothing to set up.
+Real narrators read every chapter of all three translations. Press play and pick up where you left off - no account, nothing to set up.
 ```
 
 ## Description
