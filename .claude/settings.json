@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/publish-narration.js*)",
+      "PowerShell(node scripts/publish-narration.js*)",
+      "PowerShell(@(Get-CimInstance Win32_Process*)",
+      "Bash(powershell -NoProfile -Command \"@(Get-CimInstance Win32_Process*)",
+      "Bash(curl -s https://bayboyproductions408.github.io/lantern/data/narration/*)",
+      "Bash(curl -s \"https://bayboyproductions408.github.io/lantern/data/narration/*)",
+      "PowerShell(Invoke-WebRequest -Uri https://bayboyproductions408.github.io/lantern/data/narration/*)",
+      "PowerShell(Invoke-RestMethod -Uri https://bayboyproductions408.github.io/lantern/data/narration/*)",
+      "PowerShell((Invoke-WebRequest -Uri https://bayboyproductions408.github.io/lantern/data/narration/*)",
+      "PowerShell((Invoke-RestMethod -Uri https://bayboyproductions408.github.io/lantern/data/narration/*)"
+    ]
+  }
+}
