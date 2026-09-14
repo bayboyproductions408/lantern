@@ -28,6 +28,32 @@ const SKIP_UPLOAD = process.argv.includes('--skip-upload');
 
 const BOOKS_PER_TRANSLATION = 66;
 
+// Refuse to start beside another uploader.
+//
+// Two uploaders writing the same GitHub release at once is the one way this
+// pipeline can corrupt itself, and the guard used to live outside the script -
+// a separate shell one-liner in every caller (the supervisor, the session cron,
+// the desktop scheduled task). That meant every caller had to get it right,
+// and the scheduled task could not run it at all without a permission prompt
+// nobody was there to answer. Inside the script there is exactly one command
+// to allow and nothing for a caller to forget. Excludes this process and its
+// own children, and fails open if the process list cannot be read, because a
+// guard that blocks the only publisher is worse than no guard.
+function otherUploaderRunning() {
+  const ps = spawnSync('powershell', ['-NoProfile', '-Command',
+    "@(Get-CimInstance Win32_Process -Filter \"Name='node.exe'\" | Where-Object { " +
+    "($_.CommandLine -like '*upload-narration*' -or $_.CommandLine -like '*publish-narration*') " +
+    "-and $_.ProcessId -ne " + process.pid + " -and $_.ParentProcessId -ne " + process.pid + " }).Count"],
+    { encoding: 'utf8' });
+  if (ps.error) return false;
+  const n = parseInt((ps.stdout || '').trim(), 10);
+  return Number.isFinite(n) && n > 0;
+}
+if (otherUploaderRunning()) {
+  console.error('another publish/upload is already running - refusing to start a second uploader');
+  process.exit(3);
+}
+
 function run(cmd, args, opts = {}) {
   const r = spawnSync(cmd, args, {
     cwd: REPO, encoding: 'utf8', maxBuffer: 1 << 28, ...opts,
