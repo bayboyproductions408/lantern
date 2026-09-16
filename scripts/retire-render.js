@@ -17,10 +17,12 @@
 // stop the supervisor; delete the Startup-folder entry that relaunches it at
 // logon. The scripts stay in the repo. Idempotent - safe to run again.
 //
-// The supervisor is found by an exact match on `-File <full path to
-// supervise-narration.ps1>`. A looser `*supervise-narration*` once matched the
-// very shell that launched it (the path was in a -Command string), and the
-// mutex guard built on that pattern made every supervisor exit at birth.
+// The supervisor is found by the literal text `-File <full path to
+// supervise-narration.ps1>` in its command line. A looser `*supervise-narration*`
+// once matched the very shell that launched it (the path was inside a -Command
+// string), and the mutex guard built on that pattern made every supervisor
+// exit at birth. The path reaches PowerShell through an environment variable
+// so no quoting or backslash escaping is involved at all.
 
 const fs = require('fs');
 const path = require('path');
@@ -33,7 +35,10 @@ const STARTUP_CMD = path.join(process.env.APPDATA || '',
 const SUPERVISOR_PS1 = path.join(REPO, 'scripts', 'supervise-narration.ps1');
 
 function ps(cmd) {
-  const r = spawnSync('powershell', ['-NoProfile', '-Command', cmd], { encoding: 'utf8' });
+  const r = spawnSync('powershell', ['-NoProfile', '-Command', cmd], {
+    encoding: 'utf8',
+    env: { ...process.env, LANTERN_SUPERVISOR: SUPERVISOR_PS1, LANTERN_SELF_PID: String(process.pid) },
+  });
   return (r.stdout || '').trim();
 }
 
@@ -65,22 +70,25 @@ if (STATUS_ONLY) { console.log('all published; --status given, changing nothing'
 
 // 1. Render processes. Parent (queue) first so it cannot react to its children dying.
 const stopped = ps(`
+  $self = [int]$env:LANTERN_SELF_PID
   $n = 0
   foreach ($pat in @('*render-queue*','*build-narration*','*upload-narration*')) {
     Get-CimInstance Win32_Process -Filter "Name='node.exe'" |
-      Where-Object { $_.CommandLine -like $pat -and $_.ProcessId -ne ${process.pid} } |
+      Where-Object { $_.CommandLine -like $pat -and $_.ProcessId -ne $self } |
       ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; $n++ }
   }
-  Get-Process piper -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue; $n++ }
+  Get-Process piper -ErrorAction SilentlyContinue |
+    ForEach-Object { Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue; $n++ }
   $n`);
 console.log(`stopped ${stopped || 0} render/upload process(es)`);
 
-// 2. The supervisor, by exact -File path. Never by a substring of the script name.
-const target = SUPERVISOR_PS1.replace(/\/g, '\\');
+// 2. The supervisor, by the literal "-File <path>" in its command line.
 const sup = ps(`
+  $p = $env:LANTERN_SUPERVISOR
+  $self = [int]$env:LANTERN_SELF_PID
   $n = 0
   Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" |
-    Where-Object { $_.CommandLine -match '-File\s+"?${target.replace(/\./g, '\.')}' -and $_.ProcessId -ne ${process.pid} } |
+    Where-Object { $_.ProcessId -ne $self -and ($_.CommandLine -like "*-File $p*" -or $_.CommandLine -like "*-File \`"$p\`"*") } |
     ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; $n++ }
   $n`);
 console.log(`stopped ${sup || 0} supervisor process(es)`);
