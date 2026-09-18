@@ -62,6 +62,23 @@ Note "supervisor started (pid $mine), checking every ${intervalSeconds}s"
 # heartbeat.txt is older than a few minutes, the supervisor is gone.
 $beat = Join-Path $repo 'supervisor-heartbeat.txt'
 
+# Leave the queue alone for the first five minutes after boot.
+#
+# On 2026-09-18 the two launches made 38s and 3m09s after boot both died within
+# thirty seconds: every worker exited with STATUS_CONTROL_C_EXIT at once and the
+# queue went with them. The third launch, 5m39s after boot, ran normally, and the
+# same worker command run by hand rendered a book cleanly in between. So the
+# render was never at fault - something in the logon sequence sends a console
+# control event that reaches the detached process tree while the desktop is
+# still settling. Waiting out that window costs nothing (the queue resumes from
+# disk) and spares two false "failed" lines per reboot.
+$uptime = (Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+if ($uptime.TotalSeconds -lt 300) {
+  $wait = [int](300 - $uptime.TotalSeconds)
+  Note "booted $([int]$uptime.TotalSeconds)s ago - waiting ${wait}s before the first check"
+  Start-Sleep -Seconds $wait
+}
+
 $restarts = 0
 while ($true) {
   Set-Content -Path $beat -Value (Get-Date -Format 'o') -Encoding utf8
