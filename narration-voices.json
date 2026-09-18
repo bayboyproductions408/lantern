@@ -114,6 +114,46 @@
       "model": "librittsh",
       "speaker": 77,
       "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "naomi": {
+      "name": "Naomi",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 143,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "reuben": {
+      "name": "Reuben",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 297,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "silas": {
+      "name": "Silas",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 561,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "esther": {
+      "name": "Esther",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 737,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
+    },
+    "jonah": {
+      "name": "Jonah",
+      "origin": "American English",
+      "licence": "CC BY 4.0",
+      "model": "librittsh",
+      "speaker": 363,
+      "credit": "LibriTTS corpus, OpenSLR 60 (CC BY 4.0)"
     }
   },
   "rvr": {

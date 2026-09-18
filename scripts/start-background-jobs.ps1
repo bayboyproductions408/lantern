@@ -63,7 +63,8 @@ if (-not $UploadOnly) {
       'kjv:abel','rvr:pilar','kjv:miriam','kjv:reuben','rvr:alonso',
       'kjv:naomi','kjv:silas','rvr:rodrigo',
       'bbe:linda','bbe:hannah','bbe:abel','bbe:miriam',
-      'kjv:esther','kjv:jonah'
+      'kjv:esther','kjv:jonah',
+      'bbe:naomi','bbe:reuben','bbe:silas','bbe:esther','bbe:jonah'
     )
     # Node, not bash. The shell driver ran perfectly in the foreground and
     # silently did nothing when detached from PowerShell - a login shell's cd,
